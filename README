@@ -8,7 +8,7 @@ Something goes here
                                 CONVENTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Classes:   myClass
+Classes:   MyClass
 Functions: my_function_name
 Variables: myVariable
 Constants: A_CONSTANT_NAME
