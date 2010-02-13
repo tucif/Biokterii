@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from annleaing.simulatedAnnealing import start_simulation
+from annealing.simulatedAnnealing import start_simulation
 import gtk
 #import cairo
 import gobject
