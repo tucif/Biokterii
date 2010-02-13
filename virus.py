@@ -15,7 +15,7 @@ class Virus(Sprite):
         self.color=(0.3,0.6,0.5)
 
     def __str__(self):
-        return "The Virus pos=[\d,\d]" % (self.posX,self.posY)
+        return "The Virus pos=[%d,%d]" % (self.posX,self.posY)
 
     def update(self):
         Sprite.update(self)
