@@ -6,10 +6,8 @@ DEFAULT_WIDTH=20
 DEFAULT_HEIGHT=20
 
 class Virus(Sprite):
-    def __init__(self):
-        Sprite.__init__(self)
-        self.posX=random.randint(0,400)
-        self.posY=random.randint(0,400)
+    def __init__(self, posX=0, posY=0):
+        Sprite.__init__(self,posX,posY)
         self.width=DEFAULT_WIDTH
         self.height=DEFAULT_HEIGHT
         self.color=(0.3,0.6,0.5)
@@ -17,7 +15,7 @@ class Virus(Sprite):
     def __str__(self):
         return "The Virus pos=[%d,%d]" % (self.posX,self.posY)
 
-    def get_class(self):
+    def get_type(self):
         return "Virus"
 
     def update(self):

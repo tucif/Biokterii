@@ -8,9 +8,8 @@ def display_simulation(window,virusList,cellList,stationList,antibodyList):
     display_cells(window,cellList)
     display_stations(window,stationList)
     display_antibodies(window,antibodyList)
-    for i in xrange(len(cellList)-1):
-            draw_line_between(window,cellList[i],cellList[i+1])
-
+    #display_lines(window,cellList)
+    
 def display_virus(window,virusList):
     """Fucntion that diplays the virus"""
     for virus in virusList:
@@ -30,6 +29,10 @@ def display_antibodies(window, antibodyList):
     """Fucntion that diplays the antibodies"""
     for antibody in antibodyList:
         antibody.paint(window)
+
+def display_lines(window, cellList):
+    for i in xrange(len(cellList)-1):
+            draw_line_between(window,cellList[i],cellList[i+1])
 
 def draw_line_between(window,sprite1,sprite2):
     """Draws a line between two sprites, if one of them is not a sprite,

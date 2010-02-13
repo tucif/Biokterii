@@ -1,7 +1,6 @@
 # coding: utf-8
 
-from annleaing.simulatedAnnealing import start_simulation
-from dircache import annotate
+from annealing.simulatedAnnealing import start_simulation
 import gtk
 #import cairo
 import gobject
@@ -9,25 +8,39 @@ import pygtk
 import random
 #from datetime import datetime
 
+
 pygtk.require('2.0')
 
 
-from virus import Virus
+from virus import Virus 
+from virus import DEFAULT_WIDTH as VIRUS_WIDTH, DEFAULT_HEIGHT as VIRUS_HEIGHT
 from cell import Cell
+from cell import DEFAULT_WIDTH as CELL_WIDTH, DEFAULT_HEIGHT as CELL_HEIGHT
 from healthStation import HealthStation
+from healthStation import DEFAULT_HEIGHT as HS_HEIGHT, DEFAULT_WIDTH as HS_WIDTH
 from antibody import Antibody
-from display import display_simulation
+from display import display_simulation, display_lines
 from hud import Hud
 
-TOTAL_CELLS = 10
-WINDOW_SIZE = 400
+TOTAL_CELLS = 15
+TOTAL_VIRUS = 1
+TOTAL_HS = 3
+TOTAL_ANTIBODIES = 4
+WINDOW_SIZE = 700
 
-vir = [Virus() for i in xrange(1)]
-cellList=[Cell() for i in xrange(10)]
-stationList=[HealthStation(WINDOW_SIZE/TOTAL_CELLS) for i in xrange(3)]
-antibodyList=[Antibody() for i in xrange(4)]
+vir = [Virus(random.randint(0,WINDOW_SIZE-VIRUS_WIDTH),
+            random.randint(0,WINDOW_SIZE-VIRUS_HEIGHT)) for i in xrange(TOTAL_VIRUS)]
+cellList=[Cell(random.randint(0,WINDOW_SIZE-CELL_WIDTH),
+               random.randint(0,WINDOW_SIZE-CELL_HEIGHT)) for i in xrange(TOTAL_CELLS)]
+stationList=[HealthStation(WINDOW_SIZE/TOTAL_CELLS,
+                            random.randint(0,WINDOW_SIZE-HS_WIDTH),
+                            random.randint(0,WINDOW_SIZE-HS_HEIGHT)
+                            ) for i in xrange(TOTAL_HS)]
+antibodyList=[Antibody() for i in xrange(TOTAL_ANTIBODIES)]
+annealedCells = []
 
-
+def update_annealing():
+    annealedCells = start_simulation(cellList)
 
 #Lienzo es donde se pintara todo
 class Lienzo(gtk.DrawingArea):
@@ -38,7 +51,7 @@ class Lienzo(gtk.DrawingArea):
         #Cambiar el color de fondo de la ventana
         self.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color(0,0,0))
         # Pedir el tamano de la ventana
-        self.set_size_request(400,400)
+        self.set_size_request(WINDOW_SIZE,WINDOW_SIZE)
 
         #Asignar la ventana que recibe de paramentro a la ventana que se
         #utilizara en el lienzo
@@ -75,6 +88,7 @@ class Lienzo(gtk.DrawingArea):
 
     def init_simulation(self):
         """Inicializacion de valores"""
+        
         gobject.timeout_add(20, self.on_timer)
 
 
@@ -94,7 +108,7 @@ class Lienzo(gtk.DrawingArea):
         cr.paint()
 
         #pintar a los agentes
-        
+        display_lines(cr, annealedCells)
         display_simulation(cr,vir,cellList,stationList,antibodyList)
         self.hud.display(cr, vir+cellList+stationList+antibodyList)
 
@@ -141,30 +155,30 @@ class Main(gtk.Window):
         super(Main, self).__init__()
         self.faseActual = 4
         self.set_title('Biokterii')
-        self.set_size_request(400,400)
+        self.set_size_request(WINDOW_SIZE,WINDOW_SIZE)
         self.set_resizable(True)
         self.set_position(gtk.WIN_POS_CENTER)
         #mainBox contiene el menu superior, contentBox(menu,lienzo) y el menu inferior
         self.mainBox = gtk.VBox(False,0)
-        self.mainBox.set_size_request(400,400)
+        self.mainBox.set_size_request(WINDOW_SIZE,WINDOW_SIZE)
 
         
         #contentBox contiene el menu lateral y lienzo
         self.contentBox= gtk.HBox(False,0) #Recibe False para no se homogeneo
         
         self.lienzo=Lienzo(self)
-        self.lienzo.set_size_request(400,400)
-
-        self.contentBox.pack_start(self.lienzo, expand=False, fill=True, padding=0)
+        self.lienzo.set_size_request(WINDOW_SIZE,WINDOW_SIZE)
+        
+        self.contentBox.pack_start(self.lienzo, expand=True, fill=True, padding=0)
         
         #Empaquetado de todos los controles
         
-        self.mainBox.pack_start(self.contentBox,expand=False, fill=True, padding=0)
+        self.mainBox.pack_start(self.contentBox,expand=True, fill=True, padding=0)
         #Agregar la caja que contiene todo a la ventana
         self.add(self.mainBox)
         self.connect("destroy", gtk.main_quit)
         self.show_all()
-        start_simulation(cellList)
+        
 
 
     def pausar_lienzo(self, widget):
@@ -172,6 +186,8 @@ class Main(gtk.Window):
 
     def correr_lienzo(self, widget):
         self.lienzo.correr()
+
+            
 
 
 if __name__ == '__main__':
