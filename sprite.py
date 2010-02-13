@@ -19,7 +19,10 @@ class Sprite():
         self.color=(random.random(),random.random(),random.random())
         self.alpha=1.0
     def __str__(self):
-        return "Sprite - Id: %d"+self.id
+        return "Sprite - Id: %d pos:[%d,%d]" % (self.id,self.posX,self.posY)
+
+    def get_type(self):
+        return "Sprite"
 
     def get_center(self):
         """Returns the center of the sprite in a two value tuple """

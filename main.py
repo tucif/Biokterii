@@ -20,6 +20,7 @@ from healthStation import HealthStation
 from healthStation import DEFAULT_HEIGHT as HS_HEIGHT, DEFAULT_WIDTH as HS_WIDTH
 from antibody import Antibody
 from display import display_simulation, display_lines
+from hud import Hud
 
 TOTAL_CELLS = 15
 TOTAL_VIRUS = 1
@@ -36,10 +37,11 @@ stationList=[HealthStation(WINDOW_SIZE/TOTAL_CELLS,
                             random.randint(0,WINDOW_SIZE-HS_HEIGHT)
                             ) for i in xrange(TOTAL_HS)]
 antibodyList=[Antibody() for i in xrange(TOTAL_ANTIBODIES)]
-annealedCells = cellList+stationList
 
-def update_annealing():
-    annealedCells = start_simulation(cellList+stationList)
+annealedCells = cellList
+
+def update_annealing(widget, list):
+    list = start_simulation(list)
 
 #Lienzo es donde se pintara todo
 class Lienzo(gtk.DrawingArea):
@@ -68,7 +70,7 @@ class Lienzo(gtk.DrawingArea):
 
         #Inicializar todos los valores
         self.init_simulation()
-
+        self.hud=Hud()
        
         self.draggingObject = None
         self.corriendo = True
@@ -109,7 +111,7 @@ class Lienzo(gtk.DrawingArea):
         #pintar a los agentes
         display_lines(cr, annealedCells)
         display_simulation(cr,vir,cellList,stationList,antibodyList)
-        
+        self.hud.display(cr, vir+cellList+stationList+antibodyList)
 
         
 
@@ -124,7 +126,8 @@ class Lienzo(gtk.DrawingArea):
 
         #pintar la información del agente seleccionado
         
-
+  
+        
     #Para drag & drop
     def button_press(self,widget,event):
         if event.button == 1:
@@ -166,13 +169,36 @@ class Main(gtk.Window):
         self.contentBox= gtk.HBox(False,0) #Recibe False para no se homogeneo
         
         self.lienzo=Lienzo(self)
-        self.lienzo.set_size_request(WINDOW_SIZE,WINDOW_SIZE)
+        self.lienzo.set_size_request(WINDOW_SIZE-20,WINDOW_SIZE-20)
         
         self.contentBox.pack_start(self.lienzo, expand=True, fill=True, padding=0)
-        
+
+
+        #Menu bar
+        menuBar = gtk.MenuBar()
+
+        filemenu = gtk.Menu()
+        filem = gtk.MenuItem("File")
+        filem.set_submenu(filemenu)
+
+        annealMenu = gtk.MenuItem("Annealing")
+        annealMenu.connect("activate", update_annealing, annealedCells)
+        filemenu.append(annealMenu)
+
+        exit = gtk.MenuItem("Exit")
+        exit.connect("activate", gtk.main_quit)
+        filemenu.append(exit)
+
+        menuBar.append(filem)
+
+        menuBox = gtk.HBox(False, 2)
+        menuBox.pack_start(menuBar, False, False, 0)
+
+
         #Empaquetado de todos los controles
-        
+        self.mainBox.pack_start(menuBox,expand=True,fill=True,padding=0)
         self.mainBox.pack_start(self.contentBox,expand=True, fill=True, padding=0)
+
         #Agregar la caja que contiene todo a la ventana
         self.add(self.mainBox)
         self.connect("destroy", gtk.main_quit)
