@@ -19,7 +19,13 @@ class Sprite():
         self.color=(random.random(),random.random(),random.random())
         self.alpha=1.0
     def __str__(self):
-        return "Sprite - ID:"+self.id
+        return "Sprite - Id: %d"+self.id
+
+    def get_center(self):
+        """Returns the center of the sprite in a two value tuple """
+        centerX=self.posX+(self.width/2)
+        centerY=self.posY+(self.height/2)
+        return [centerX,centerY]
 
     def drag(self,xMouse, yMouse):
         if self.is_colliding_with_mouse(xMouse, yMouse):

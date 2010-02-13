@@ -115,7 +115,7 @@ class Lienzo(gtk.DrawingArea):
     def button_press(self,widget,event):
         if event.button == 1:
             self.objetoSeleccionado=[]
-            lstTemp = vir+cellList+stationList+antibodyList
+            lstTemp = antibodyList+vir+cellList+stationList
             for ob in lstTemp:
                 if ob.drag(event.x,event.y):
                     self.draggingObject = ob

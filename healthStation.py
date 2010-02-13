@@ -16,7 +16,7 @@ class HealthStation(Sprite):
         self.healRatio = healRatio
 
     def __str__(self):
-        return "A Health Station id:\d pos=[\d,\d]" % (self.id,self.posX,self.posY)
+        return "A Health Station id:%d pos=[%d,%d]" % (self.id,self.posX,self.posY)
 
     def update(self):
         Sprite.update(self)

@@ -14,7 +14,7 @@ class Antibody(Sprite):
         self.color=(1,1,1)
 
     def __str__(self):
-        return "Antivirus id:\d, pos=[\d,\d]" % (self.id,self.posX,self.posY)
+        return "Antivirus id:%d, pos=[%d,%d]" % (self.id,self.posX,self.posY)
 
     def update(self):
         Sprite.update(self)
