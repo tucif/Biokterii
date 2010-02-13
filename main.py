@@ -1,8 +1,7 @@
 # coding: utf-8
 
-import sys
 import gtk
-import cairo
+#import cairo
 import gobject
 import pygtk
 import random
@@ -30,7 +29,7 @@ class Lienzo(gtk.DrawingArea):
         #reconocer cuando oprimes y sueltas el mouse
         self.connect("button_press_event",self.button_press)
         self.connect("button_release_event",self.button_release)
-        self.connect("motion_notify_event",self.actualizarDragged)
+        self.connect("motion_notify_event",self.actualizar_dragged)
         self.set_events(gtk.gdk.BUTTON_PRESS_MASK|gtk.gdk.BUTTON_RELEASE_MASK|gtk.gdk.POINTER_MOTION_MASK)
 
         #Inicializar todos los valores
@@ -43,7 +42,7 @@ class Lienzo(gtk.DrawingArea):
         self.objetoSeleccionado=[]
 
 
-    def actualizarDragged(self,widget,event):
+    def actualizar_dragged(self,widget,event):
         if self.draggingObject:
             self.draggingObject.posX=event.x
             self.draggingObject.posY=event.y
@@ -79,7 +78,7 @@ class Lienzo(gtk.DrawingArea):
 
         
 
-        #pintar efecto de selecci�n sobre un agente
+        #pintar efecto de selección sobre un agente
         if self.objetoSeleccionado:
             cr.set_line_width(2)
             cr.set_source_rgba(random.random(), 1, random.random(), 0.3)
@@ -88,7 +87,7 @@ class Lienzo(gtk.DrawingArea):
 
             cr.stroke()
 
-        #pintar la informaci�n del agente seleccionado
+        #pintar la información del agente seleccionado
         
 
     #Para drag & drop
@@ -136,10 +135,10 @@ class Main(gtk.Window):
         self.connect("destroy", gtk.main_quit)
         self.show_all()
 
-    def pausarLienzo(self, widget):
+    def pausar_lienzo(self, widget):
         self.lienzo.pausar()
 
-    def correrLienzo(self, widget):
+    def correr_lienzo(self, widget):
         self.lienzo.correr()
 
     
