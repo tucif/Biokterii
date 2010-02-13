@@ -1,5 +1,7 @@
 # coding: utf-8
 
+from annleaing.simulatedAnnealing import start_simulation
+from dircache import annotate
 import gtk
 #import cairo
 import gobject
@@ -16,9 +18,12 @@ from healthStation import HealthStation
 from antibody import Antibody
 from display import display_simulation
 
+TOTAL_CELLS = 10
+WINDOW_SIZE = 400
+
 vir = [Virus() for i in xrange(1)]
 cellList=[Cell() for i in xrange(10)]
-stationList=[HealthStation() for i in xrange(3)]
+stationList=[HealthStation(WINDOW_SIZE/TOTAL_CELLS) for i in xrange(3)]
 antibodyList=[Antibody() for i in xrange(4)]
 
 
@@ -158,6 +163,8 @@ class Main(gtk.Window):
         self.add(self.mainBox)
         self.connect("destroy", gtk.main_quit)
         self.show_all()
+        start_simulation(cellList)
+
 
     def pausar_lienzo(self, widget):
         self.lienzo.pausar()
@@ -165,7 +172,7 @@ class Main(gtk.Window):
     def correr_lienzo(self, widget):
         self.lienzo.correr()
 
-    
 
-Main()
-gtk.main()
+if __name__ == '__main__':
+    Main()
+    gtk.main()
