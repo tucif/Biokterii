@@ -21,6 +21,25 @@ class Sprite():
     def __str__(self):
         return "Sprite - ID:"+self.id
 
+    def drag(self,xMouse, yMouse):
+        if self.is_colliding_with_mouse(xMouse, yMouse):
+                self.dragging=True
+                return True
+        return False
+
+    def drop(self,xMouse,yMouse):
+        if self.is_colliding_with_mouse(xMouse, yMouse):
+            self.dragging=False
+        if self.dragging:
+            self.dragging=False
+            self.posX=xMouse
+            self.posY=yMouse
+
+    def is_colliding_with_mouse(self, xMouse,yMouse):
+        if self.posX<=xMouse and self.posX+self.width>=xMouse and self.posY<=yMouse and self.posY+self.height>=yMouse:
+            return True
+        return False
+
     def update(self):
         pass
 

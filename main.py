@@ -16,7 +16,7 @@ from healthStation import HealthStation
 from antibody import Antibody
 from display import display_simulation
 
-vir = Virus()
+vir = [Virus() for i in xrange(1)]
 cellList=[Cell() for i in xrange(10)]
 stationList=[HealthStation() for i in xrange(3)]
 antibodyList=[Antibody() for i in xrange(4)]
@@ -99,7 +99,7 @@ class Lienzo(gtk.DrawingArea):
             cr.set_line_width(2)
             cr.set_source_rgba(random.random(), 1, random.random(), 0.3)
             cr.rectangle(self.objetoSeleccionado.posX-20,self.objetoSeleccionado.posY-20,
-                            self.objetoSeleccionado.ancho+40, self.objetoSeleccionado.alto+40)
+                            self.objetoSeleccionado.width+40, self.objetoSeleccionado.height+40)
 
             cr.stroke()
 
@@ -110,7 +110,7 @@ class Lienzo(gtk.DrawingArea):
     def button_press(self,widget,event):
         if event.button == 1:
             self.objetoSeleccionado=[]
-            lstTemp = self.listaAgentes + self.listaObjetos
+            lstTemp = vir+cellList+stationList+antibodyList
             for ob in lstTemp:
                 if ob.drag(event.x,event.y):
                     self.draggingObject = ob
