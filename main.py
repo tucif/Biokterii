@@ -5,12 +5,16 @@ import gtk
 import gobject
 import pygtk
 import random
-pygtk.require('2.0')
 #from datetime import datetime
+
+from display import display
+
+pygtk.require('2.0')
 
 #Lienzo es donde se pintara todo
 class Lienzo(gtk.DrawingArea):
     def __init__(self, ventana):
+        """"""
         super(Lienzo, self).__init__()
 
         #Cambiar el color de fondo de la ventana
@@ -68,12 +72,12 @@ class Lienzo(gtk.DrawingArea):
         #todo en la ventana
         cr = widget.window.cairo_create()
         #Le decimos a cairo que pinte su widget por primera vez.
-        cr.set_source_rgb(0,0,0)
+        cr.set_source_rgb(1,1,1)
         cr.paint()
 
         #pintar a los agentes
         
-
+        display(cr)
         
 
         
@@ -112,8 +116,8 @@ class Main(gtk.Window):
         self.faseActual = 4
         self.set_title('Proyecto')
         self.set_size_request(400,400)
-        self.set_resizable(False)
-
+        self.set_resizable(True)
+        self.set_position(gtk.WIN_POS_CENTER)
         #mainBox contiene el menu superior, contentBox(menu,lienzo) y el menu inferior
         self.mainBox = gtk.VBox(False,0)
         self.mainBox.set_size_request(400,400)
