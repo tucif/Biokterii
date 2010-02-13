@@ -28,11 +28,16 @@ TOTAL_HS = 3
 TOTAL_ANTIBODIES = 4
 WINDOW_SIZE = 700
 
-vir = [Virus(random.randint(0,WINDOW_SIZE-VIRUS_WIDTH),
-            random.randint(0,WINDOW_SIZE-VIRUS_HEIGHT)) for i in xrange(TOTAL_VIRUS)]
-cellList=[Cell(random.randint(0,WINDOW_SIZE-CELL_WIDTH),
-               random.randint(0,WINDOW_SIZE-CELL_HEIGHT)) for i in xrange(TOTAL_CELLS)]
-stationList=[HealthStation(WINDOW_SIZE/TOTAL_CELLS,
+vir =[Virus(
+           random.randint(0,WINDOW_SIZE-VIRUS_WIDTH),
+           random.randint(0,WINDOW_SIZE-VIRUS_HEIGHT)
+            ) for i in xrange(TOTAL_VIRUS)]
+cellList=[Cell(
+                random.randint(0,WINDOW_SIZE-CELL_WIDTH),
+                random.randint(0,WINDOW_SIZE-CELL_HEIGHT)
+                ) for i in xrange(TOTAL_CELLS)]
+stationList=[HealthStation(
+                            WINDOW_SIZE/TOTAL_CELLS,
                             random.randint(0,WINDOW_SIZE-HS_WIDTH),
                             random.randint(0,WINDOW_SIZE-HS_HEIGHT)
                             ) for i in xrange(TOTAL_HS)]
