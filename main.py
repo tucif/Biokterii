@@ -7,9 +7,21 @@ import pygtk
 import random
 #from datetime import datetime
 
-from display import display
-
 pygtk.require('2.0')
+
+
+from virus import Virus
+from cell import Cell
+from healthStation import HealthStation
+from antibody import Antibody
+from display import display_simulation
+
+vir = Virus()
+cellList=[Cell() for i in xrange(10)]
+stationList=[HealthStation() for i in xrange(3)]
+antibodyList=[Antibody() for i in xrange(4)]
+
+
 
 #Lienzo es donde se pintara todo
 class Lienzo(gtk.DrawingArea):
@@ -77,7 +89,7 @@ class Lienzo(gtk.DrawingArea):
 
         #pintar a los agentes
         
-        display(cr)
+        display_simulation(cr,vir,cellList,stationList,antibodyList)
         
 
         
@@ -116,7 +128,7 @@ class Lienzo(gtk.DrawingArea):
     def correr(self):
         self.corriendo=True
 
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Main(gtk.Window):
     def __init__(self):
