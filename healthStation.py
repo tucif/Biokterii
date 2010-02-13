@@ -6,10 +6,8 @@ DEFAULT_WIDTH=15
 DEFAULT_HEIGHT=25
 
 class HealthStation(Sprite):
-    def __init__(self, healRatio):
-        Sprite.__init__(self)
-        self.posX=random.randint(0,400)
-        self.posY=random.randint(0,400)
+    def __init__(self, healRatio, posX=0, posY=0):
+        Sprite.__init__(self,posX,posY)
         self.width=DEFAULT_WIDTH
         self.height=DEFAULT_HEIGHT
         self.color=(0.0,1.0,0.0)

@@ -4,11 +4,11 @@ DEFAULT_WIDTH=10
 DEFAULT_HEIGHT=10
 
 class Sprite():
-    def __init__(self):
+    def __init__(self, posX=0, posY=0):
         """Default initial sprite values"""
         self.id=random.randint(0,10000);
-        self.posX=0
-        self.posY=0
+        self.posX=posX
+        self.posY=posY
         self.width=DEFAULT_WIDTH
         self.height=DEFAULT_HEIGHT
         self.colPosX=self.posX
