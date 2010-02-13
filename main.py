@@ -17,6 +17,7 @@ from cell import Cell
 from healthStation import HealthStation
 from antibody import Antibody
 from display import display_simulation
+from hud import Hud
 
 TOTAL_CELLS = 10
 WINDOW_SIZE = 400
@@ -55,7 +56,7 @@ class Lienzo(gtk.DrawingArea):
 
         #Inicializar todos los valores
         self.init_simulation()
-
+        self.hud=Hud()
        
         self.draggingObject = None
         self.corriendo = True
@@ -95,7 +96,7 @@ class Lienzo(gtk.DrawingArea):
         #pintar a los agentes
         
         display_simulation(cr,vir,cellList,stationList,antibodyList)
-        
+        self.hud.display(cr, vir+cellList+stationList+antibodyList)
 
         
 

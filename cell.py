@@ -17,6 +17,9 @@ class Cell(Sprite):
     def __str__(self):
         return "A cell id:%d pos=[%d,%d]"% (self.id,self.posX,self.posY)
 
+    def get_class(self):
+        return "Cell"
+
     def update(self):
         Sprite.update(self)
 

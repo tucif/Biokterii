@@ -1,5 +1,7 @@
 from sprite import Sprite
 
+DISPLAY_IDS=True
+
 def display_simulation(window,virusList,cellList,stationList,antibodyList):
     """Fucntion that diplays the whole simulation"""
     display_virus(window,virusList)
