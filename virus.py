@@ -15,6 +15,9 @@ class Virus(Sprite):
     def __str__(self):
         return "The Virus pos=[%d,%d]" % (self.posX,self.posY)
 
+    def get_type(self):
+        return "Virus"
+
     def update(self):
         Sprite.update(self)
 

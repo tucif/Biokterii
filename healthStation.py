@@ -16,6 +16,9 @@ class HealthStation(Sprite):
     def __str__(self):
         return "A Health Station id:%d pos=[%d,%d]" % (self.id,self.posX,self.posY)
 
+    def get_type(self):
+        return "Health Station"
+
     def update(self):
         Sprite.update(self)
 
