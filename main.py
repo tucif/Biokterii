@@ -38,7 +38,9 @@ stationList=[HealthStation(WINDOW_SIZE/TOTAL_CELLS,
                             ) for i in xrange(TOTAL_HS)]
 antibodyList=[Antibody() for i in xrange(TOTAL_ANTIBODIES)]
 
-annealedCells = cellList
+annealedCells = cellList+stationList
+
+
 
 def update_annealing(widget, list):
     list = start_simulation(list)
@@ -217,5 +219,4 @@ class Main(gtk.Window):
 
 if __name__ == '__main__':
     Main()
-    update_annealing()
     gtk.main()
