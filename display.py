@@ -25,3 +25,6 @@ def display_antibodies(window, antibodyList):
     """Fucntion that diplays the antibodies"""
     for antibody in antibodyList:
         antibody.paint(window)
+
+def draw_line_between(sprite1,sprite2):
+    """Draws a line between two objects"""
