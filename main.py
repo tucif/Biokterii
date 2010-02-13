@@ -97,10 +97,19 @@ class Lienzo(gtk.DrawingArea):
     #Para drag & drop
     def button_press(self,widget,event):
         if event.button == 1:
-            pass
-                
+            self.objetoSeleccionado=[]
+            lstTemp = self.listaAgentes + self.listaObjetos
+            for ob in lstTemp:
+                if ob.drag(event.x,event.y):
+                    self.draggingObject = ob
+                    self.objetoSeleccionado=ob
+                    break
+
+
     def button_release(self,widget,event):
-        pass
+        if self.draggingObject:
+            self.draggingObject.drop(event.x,event.y)
+            self.draggingObject = None
 
     def pausar(self):
         self.corriendo=False
@@ -114,7 +123,7 @@ class Main(gtk.Window):
     def __init__(self):
         super(Main, self).__init__()
         self.faseActual = 4
-        self.set_title('Proyecto')
+        self.set_title('Biokterii')
         self.set_size_request(400,400)
         self.set_resizable(True)
         self.set_position(gtk.WIN_POS_CENTER)
