@@ -104,8 +104,7 @@ class Lienzo(gtk.DrawingArea):
                     self.draggingObject = ob
                     self.objetoSeleccionado=ob
                     break
-
-
+                    
     def button_release(self,widget,event):
         if self.draggingObject:
             self.draggingObject.drop(event.x,event.y)
