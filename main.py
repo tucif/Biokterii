@@ -42,11 +42,11 @@ stationList=[HealthStation(
                             random.randint(0,WINDOW_SIZE-HS_HEIGHT)
                             ) for i in xrange(TOTAL_HS)]
 antibodyList=[Antibody() for i in xrange(TOTAL_ANTIBODIES)]
+
 annealedCells = cellList
 
 def update_annealing(widget, list):
     list = start_simulation(list)
-
 
 #Lienzo es donde se pintara todo
 class Lienzo(gtk.DrawingArea):
@@ -222,4 +222,5 @@ class Main(gtk.Window):
 
 if __name__ == '__main__':
     Main()
+    update_annealing()
     gtk.main()

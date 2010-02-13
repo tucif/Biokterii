@@ -1,8 +1,12 @@
 from anneal import *
 from math import pow, sqrt
+from healthStation import HealthStation
 
 def distance(a, b):
-        return sqrt(pow(a.posX - b.posX,2) + pow(a.posY - b.posY,2))
+        if isinstance(b, HealthStation):
+            return (sqrt(pow(a.posX - b.posX,2) + pow(a.posY - b.posY,2)) - 100)
+        else:
+            return sqrt(pow(a.posX - b.posX,2) + pow(a.posY - b.posY,2))
 
 def route_move(state):
 	"""Swaps two cities in the route."""
