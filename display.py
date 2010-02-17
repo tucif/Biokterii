@@ -2,13 +2,12 @@ from sprite import Sprite
 
 DISPLAY_IDS=True
 
-def display_simulation(window,virusList,cellList,stationList,antibodyList):
+def display_simulation(window,virusList,cellList,antibodyList):
     """Fucntion that diplays the whole simulation"""
     display_virus(window,virusList)
     display_cells(window,cellList)
-    display_stations(window,stationList)
     display_antibodies(window,antibodyList)
-    #display_lines(window,cellList)
+    display_lines(window,cellList)
     
 def display_virus(window,virusList):
     """Fucntion that diplays the virus"""

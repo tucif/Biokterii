@@ -22,9 +22,9 @@ from antibody import Antibody
 from display import display_simulation, display_lines
 from hud import Hud
 
-TOTAL_CELLS = 15
+TOTAL_CELLS = 5
 TOTAL_VIRUS = 1
-TOTAL_HS = 3
+TOTAL_HS = 1
 TOTAL_ANTIBODIES = 4
 WINDOW_SIZE = 700
 
@@ -43,12 +43,12 @@ stationList=[HealthStation(
                             ) for i in xrange(TOTAL_HS)]
 antibodyList=[Antibody() for i in xrange(TOTAL_ANTIBODIES)]
 
-annealedCells = cellList+stationList
+#annealedCells = cellList+stationList
 
 
 
-def update_annealing(widget, list):
-    list = start_simulation(list)
+def update_annealing(widget, lienzo):
+    lienzo.annealedCells = start_simulation(lienzo.annealedCells)
 
 #Lienzo es donde se pintara todo
 class Lienzo(gtk.DrawingArea):
@@ -78,7 +78,10 @@ class Lienzo(gtk.DrawingArea):
         #Inicializar todos los valores
         self.init_simulation()
         self.hud=Hud()
-       
+        
+        #celulas
+        self.annealedCells=cellList+stationList
+
         self.draggingObject = None
         self.corriendo = True
 
@@ -116,9 +119,9 @@ class Lienzo(gtk.DrawingArea):
         cr.paint()
 
         #pintar a los agentes
-        display_lines(cr, annealedCells)
-        display_simulation(cr,vir,cellList,stationList,antibodyList)
-        self.hud.display(cr, vir+cellList+stationList+antibodyList)
+        #display_lines(cr, self.annealedCells)
+        display_simulation(cr,vir,self.annealedCells,antibodyList)
+        self.hud.display(cr, vir+self.annealedCells+antibodyList)
 
         
 
@@ -139,7 +142,7 @@ class Lienzo(gtk.DrawingArea):
     def button_press(self,widget,event):
         if event.button == 1:
             self.objetoSeleccionado=[]
-            lstTemp = antibodyList+vir+cellList+stationList
+            lstTemp = antibodyList+vir+self.annealedCells
             for ob in lstTemp:
                 if ob.drag(event.x,event.y):
                     self.draggingObject = ob
@@ -189,7 +192,7 @@ class Main(gtk.Window):
         filem.set_submenu(filemenu)
 
         annealMenu = gtk.MenuItem("Annealing")
-        annealMenu.connect("activate", update_annealing, annealedCells)
+        annealMenu.connect("activate", update_annealing, self.lienzo)
         filemenu.append(annealMenu)
 
         exit = gtk.MenuItem("Exit")
@@ -210,8 +213,6 @@ class Main(gtk.Window):
         self.add(self.mainBox)
         self.connect("destroy", gtk.main_quit)
         self.show_all()
-        
-
 
     def pausar_lienzo(self, widget):
         self.lienzo.pausar()
