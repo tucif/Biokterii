@@ -7,7 +7,7 @@ import gobject
 import pygtk
 import random
 #from datetime import datetime
-
+from math import pow, sqrt
 
 pygtk.require('2.0')
 
@@ -22,9 +22,9 @@ from antibody import Antibody
 from display import display_simulation
 from hud import Hud
 
-TOTAL_CELLS = 5
+TOTAL_CELLS = 15
 TOTAL_VIRUS = 1
-TOTAL_HS = 1
+TOTAL_HS = 5
 TOTAL_ANTIBODIES = 0
 WINDOW_SIZE = 700
 
@@ -36,8 +36,13 @@ cellList=[Cell(
                 random.randint(0,WINDOW_SIZE-CELL_WIDTH),
                 random.randint(0,WINDOW_SIZE-CELL_HEIGHT)
                 ) for i in xrange(TOTAL_CELLS)]
+#stationList=[HealthStation(
+#                            WINDOW_SIZE/TOTAL_CELLS,
+#                            random.randint(0,WINDOW_SIZE-HS_WIDTH),
+#                            random.randint(0,WINDOW_SIZE-HS_HEIGHT)
+#                            ) for i in xrange(TOTAL_HS)]
 stationList=[HealthStation(
-                            WINDOW_SIZE/TOTAL_CELLS,
+                            500,
                             random.randint(0,WINDOW_SIZE-HS_WIDTH),
                             random.randint(0,WINDOW_SIZE-HS_HEIGHT)
                             ) for i in xrange(TOTAL_HS)]
@@ -111,7 +116,7 @@ class Lienzo(gtk.DrawingArea):
 
     def update(self):
         self.queue_draw()
-        if self.annealingCompleted:
+        if self.annealingCompleted and not vir[0].isDead:
             self.set_virus_vel()
             vir[0].update()
 
@@ -149,7 +154,7 @@ class Lienzo(gtk.DrawingArea):
             if self.nextCell in self.annealedCells:
                 if self.nextCell.get_type()=="Health Station":
                     self.nextCell.alpha=(0.5);
-                if self.nextCell.get_type()=="Cell":
+                if self.nextCell.get_type()=="Cell" and not vir[0].isDead:
                     self.nextCell.color=(1,0,0);
                     
                 self.visitedCells=1+self.annealedCells.index(self.nextCell)
@@ -157,9 +162,22 @@ class Lienzo(gtk.DrawingArea):
             if self.visitedCells==len(self.annealedCells):
                 self.allVisited=True
 
+            lastCell=self.nextCell
+
             if not self.allVisited:
                 self.nextCell=self.annealedCells[self.visitedCells]
+                vir[0].hp-=self.distance(lastCell, self.nextCell)
                 print self.nextCell
+
+            if isinstance(lastCell,HealthStation):
+                vir[0].hp+=lastCell.healRatio
+
+            if vir[0].hp<0:
+                vir[0].color=(1,0,0)
+                vir[0].alpha=(0.5)
+
+    def distance(self,a, b):
+        return sqrt(pow(a.posX - b.posX,2) + pow(a.posY - b.posY,2))
 
     def vel_with_delta(self,deltaX,deltaY,axis):
         if axis=='X':

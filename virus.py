@@ -11,7 +11,9 @@ class Virus(Sprite):
         self.width=DEFAULT_WIDTH
         self.height=DEFAULT_HEIGHT
         self.color=(0.3,0.6,0.5)
-        self.hp=2000
+        self.maxHp=1000
+        self.hp=self.maxHp
+        self.isDead=False
         self.velX=0.0;
         self.velY=0.0;
 
@@ -25,6 +27,8 @@ class Virus(Sprite):
         Sprite.update(self)
         self.posX+=self.velX
         self.posY+=self.velY
+        if self.hp<=0:
+            self.isDead=True
 
     def paint(self,window):
         Sprite.paint(self,window)

@@ -16,15 +16,31 @@ def route_energy(state, virus):
 	"""Calculates the energy required to complete the route."""
 	e = 0
         salud = virus[0].hp
+
+        if(isinstance(state[0], HealthStation)):
+            #e += 100
+            pass
 	for i in range(len(state)):
-            if(isinstance(state[0], HealthStation)):
+            dist = distance( state[i-1], state[i])
+            salud-=dist
+            e+=dist
+            if(salud < 0):
                 e += 1000
-            if
-            dist = distance( state[i-1], state[i] )
-            if(salud < dist):
-                e += 1000
-            e +=  dist
+            else:
+                if i < len(state)-1 and isinstance(state[i+1],HealthStation):
+                    #e+=abs(salud-state[i+1].healRatio)
+                    if(salud>0):
+                        e+=abs(salud-state[i+1].healRatio)
+#                        if (salud > virus[0].maxHp*0.8
+#                            e+=100
+                        salud+=state[i+1].healRatio
+                        dif=0
+                        if salud>virus[0].maxHp:
+                            dif=salud-virus[0].maxHp
+                            salud=virus[0].maxHp
+                        e-=state[i+1].healRatio+dif
 	return e
+
 
 def start_simulation(lienzo, virus):
     """Recieves a cell list"""
@@ -33,9 +49,9 @@ def start_simulation(lienzo, virus):
     state = lienzo.annealedCells
     random.shuffle(state)
 
-    tMax=100
+    tMax=1000
     tMin=0.001
-    steps=180*len(state)
+    steps=1800*len(state)
     updates=10
     
     annealer = Annealer(route_energy, route_move,state, tMax, tMin, steps,lienzo,virus,updates)
