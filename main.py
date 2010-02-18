@@ -120,26 +120,31 @@ class Lienzo(gtk.DrawingArea):
     def set_virus_vel(self):
         if not self.initialized:
             self.initialized=True
-            vir[0].posX=self.annealedCells[0].posX
-            vir[0].posY=self.annealedCells[0].posY
+            vir[0].posX=self.annealedCells[0].get_center()[0]-(vir[0].width/2)
+            vir[0].posY=self.annealedCells[0].get_center()[1]-(vir[0].height/2)
             self.nextCell=self.annealedCells[0]
 
-        if vir[0].posX>self.nextCell.posX:
-            vir[0].velX=-1
-        elif vir[0].posX<self.nextCell.posX:
-            vir[0].velX=1
+        deltaX=abs(vir[0].posX-self.nextCell.posX)
+        deltaY=abs(vir[0].posY-self.nextCell.posY)
+
+        if vir[0].posX+vir[0].width/2>self.nextCell.posX+self.nextCell.width/2:
+            vir[0].velX=-1.0*self.vel_with_delta(deltaX,deltaY,'X')
+        elif vir[0].posX+vir[0].width/2<self.nextCell.posX+self.nextCell.width/2:
+            vir[0].velX=1.0*self.vel_with_delta(deltaX,deltaY,'X')
         else:
             vir[0].velX=0
 
-        if vir[0].posY>self.nextCell.posY:
-            vir[0].velY=-1
-        elif vir[0].posY<self.nextCell.posY:
-            vir[0].velY=1
+        if vir[0].posY+vir[0].height/2>self.nextCell.posY+self.nextCell.height/2:
+            vir[0].velY=-1.0*self.vel_with_delta(deltaX,deltaY,'Y')
+        elif vir[0].posY+vir[0].height/2<self.nextCell.posY+self.nextCell.height/2:
+            vir[0].velY=1.0*self.vel_with_delta(deltaX,deltaY,'Y')
         else:
             vir[0].velY=0
 
+        [vx,vy]=vir[0].get_center()
+        [cx,cy]=self.nextCell.get_center()
 
-        if vir[0].posX==self.nextCell.posX and vir[0].posY==self.nextCell.posY:
+        if vx==cx and vy==cy:
             print "next cell: "+str(self.nextCell)
             if self.nextCell in self.annealedCells:
                 self.visitedCells=1+self.annealedCells.index(self.nextCell)
@@ -151,6 +156,18 @@ class Lienzo(gtk.DrawingArea):
                 self.nextCell=self.annealedCells[self.visitedCells]
                 print self.nextCell
 
+    def vel_with_delta(self,deltaX,deltaY,axis):
+        if axis=='X':
+            if deltaX>deltaY:
+                return 1
+            else:
+                return deltaX/deltaY
+        else:
+            if deltaY>deltaX:
+                return 1
+            else:
+                return deltaY/deltaX
+            
     def paint(self, widget, event):
         """Nuestro metodo de pintado propio"""
 

@@ -148,6 +148,6 @@ class Annealer(Thread):
                                     trials, accepts, improves = 0, 0, 0
 		
 		# Return best state and energy
-
+                self.lienzo.annealingCompleted=True
 		#return bestState, bestEnergy
                 
