@@ -28,14 +28,18 @@ def start_simulation(lienzo):
     state = lienzo.annealedCells
     random.shuffle(state)
 
-    annealer = Annealer(route_energy, route_move,state, 100, 0.01, 180*len(state),lienzo,10)
+    tMax=100
+    tMin=0.001
+    steps=180*len(state)
+    updates=10
+
+    annealer = Annealer(route_energy, route_move,state, tMax, tMin, steps,lienzo,updates)
     annealer.start()
     #state, e = annealer.anneal(state, 10000000, 0.01, 18000*len(state), 9)
     #state, e = annealer.anneal(state, 100, 0.01, 180*len(state), 10)
     #print "%i mile route:" % e
     for cell in state:
             print "\t", cell
-
     return state
 
 
