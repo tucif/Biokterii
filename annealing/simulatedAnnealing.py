@@ -1,12 +1,11 @@
 from anneal import *
+from display import display_lines
 from math import pow, sqrt
 from healthStation import HealthStation
+from display import *
 
 def distance(a, b):
-        if isinstance(b, HealthStation):
-            return (sqrt(pow(a.posX - b.posX,2) + pow(a.posY - b.posY,2)) - 100)
-        else:
-            return sqrt(pow(a.posX - b.posX,2) + pow(a.posY - b.posY,2))
+    return sqrt(pow(a.posX - b.posX,2) + pow(a.posY - b.posY,2))
 
 def route_move(state):
 	"""Swaps two cities in the route."""
@@ -18,7 +17,9 @@ def route_energy(state):
 	"""Calculates the energy required to complete the route."""
 	e = 0
 	for i in range(len(state)):
-		e += distance( state[i-1], state[i] )
+            if(isinstance(state[0], HealthStation)):
+                e += 1000
+            e += distance( state[i-1], state[i] )
 	return e
 
 def start_simulation(lienzo):
@@ -38,6 +39,7 @@ def start_simulation(lienzo):
     #state, e = annealer.anneal(state, 10000000, 0.01, 18000*len(state), 9)
     #state, e = annealer.anneal(state, 100, 0.01, 180*len(state), 10)
     #print "%i mile route:" % e
+
     for cell in state:
             print "\t", cell
     return state

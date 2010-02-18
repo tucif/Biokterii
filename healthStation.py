@@ -14,7 +14,7 @@ class HealthStation(Sprite):
         self.healRatio = healRatio
 
     def __str__(self):
-        return "A Health Station id:%d - healRatio:%d" % (self.id,self.healRatio)
+        return "A Health Station id:%d - healRatio:%d pos[%d %d]" % (self.id,self.healRatio, self.posX, self.posY)
 
     def get_type(self):
         return "Health Station"
