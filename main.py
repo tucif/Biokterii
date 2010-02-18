@@ -19,10 +19,10 @@ from cell import DEFAULT_WIDTH as CELL_WIDTH, DEFAULT_HEIGHT as CELL_HEIGHT
 from healthStation import HealthStation
 from healthStation import DEFAULT_HEIGHT as HS_HEIGHT, DEFAULT_WIDTH as HS_WIDTH
 from antibody import Antibody
-from display import display_simulation, display_lines
+from display import display_simulation
 from hud import Hud
 
-TOTAL_CELLS = 5
+TOTAL_CELLS = 25
 TOTAL_VIRUS = 1
 TOTAL_HS = 1
 TOTAL_ANTIBODIES = 4
@@ -48,7 +48,7 @@ antibodyList=[Antibody() for i in xrange(TOTAL_ANTIBODIES)]
 
 
 def update_annealing(widget, lienzo):
-    lienzo.annealedCells = start_simulation(lienzo.annealedCells)
+    lienzo.annealedCells = start_simulation(lienzo)
 
 #Lienzo es donde se pintara todo
 class Lienzo(gtk.DrawingArea):
