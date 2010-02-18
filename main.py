@@ -22,9 +22,9 @@ from antibody import Antibody
 from display import display_simulation
 from hud import Hud
 
-TOTAL_CELLS = 15
+TOTAL_CELLS = 2
 TOTAL_VIRUS = 1
-TOTAL_HS = 5
+TOTAL_HS = 1
 TOTAL_ANTIBODIES = 0
 WINDOW_SIZE = 700
 
@@ -167,7 +167,6 @@ class Lienzo(gtk.DrawingArea):
             if not self.allVisited:
                 self.nextCell=self.annealedCells[self.visitedCells]
                 vir[0].hp-=self.distance(lastCell, self.nextCell)
-                print self.nextCell
 
             if isinstance(lastCell,HealthStation):
                 vir[0].hp+=lastCell.healRatio
