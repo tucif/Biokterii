@@ -28,7 +28,7 @@ class Sprite():
         """Returns the center of the sprite in a two value tuple """
         centerX=self.posX+(self.width/2)
         centerY=self.posY+(self.height/2)
-        return [int(centerX),int(centerY)]
+        return [centerX,centerY]
 
     def drag(self,xMouse, yMouse):
         if self.is_colliding_with_mouse(xMouse, yMouse):

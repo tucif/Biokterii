@@ -22,7 +22,7 @@ from antibody import Antibody
 from display import display_simulation
 from hud import Hud
 
-TOTAL_CELLS = 5
+TOTAL_CELLS = 15
 TOTAL_VIRUS = 1
 TOTAL_HS = 1
 TOTAL_ANTIBODIES = 4
@@ -124,27 +124,27 @@ class Lienzo(gtk.DrawingArea):
             vir[0].posY=self.annealedCells[0].get_center()[1]-(vir[0].height/2)
             self.nextCell=self.annealedCells[0]
 
-        deltaX=abs(vir[0].posX-self.nextCell.posX)
-        deltaY=abs(vir[0].posY-self.nextCell.posY)
+        [vCenterX,vCenterY]=vir[0].get_center()
+        [cCenterX,cCenterY]=self.nextCell.get_center()
 
-        if vir[0].posX+vir[0].width/2>self.nextCell.posX+self.nextCell.width/2:
+        deltaX=abs(vCenterX-cCenterX)
+        deltaY=abs(vCenterY-cCenterY)
+
+        if vCenterX>cCenterX:
             vir[0].velX=-1.0*self.vel_with_delta(deltaX,deltaY,'X')
-        elif vir[0].posX+vir[0].width/2<self.nextCell.posX+self.nextCell.width/2:
+        elif vCenterX<cCenterX:
             vir[0].velX=1.0*self.vel_with_delta(deltaX,deltaY,'X')
         else:
             vir[0].velX=0
 
-        if vir[0].posY+vir[0].height/2>self.nextCell.posY+self.nextCell.height/2:
+        if vCenterY>cCenterY:
             vir[0].velY=-1.0*self.vel_with_delta(deltaX,deltaY,'Y')
-        elif vir[0].posY+vir[0].height/2<self.nextCell.posY+self.nextCell.height/2:
+        elif vCenterY<cCenterY:
             vir[0].velY=1.0*self.vel_with_delta(deltaX,deltaY,'Y')
         else:
             vir[0].velY=0
 
-        [vx,vy]=vir[0].get_center()
-        [cx,cy]=self.nextCell.get_center()
-
-        if vx==cx and vy==cy:
+        if vCenterX==cCenterX and vCenterY==cCenterY:
             print "next cell: "+str(self.nextCell)
             if self.nextCell in self.annealedCells:
                 self.visitedCells=1+self.annealedCells.index(self.nextCell)
