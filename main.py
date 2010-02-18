@@ -22,7 +22,7 @@ from antibody import Antibody
 from display import display_simulation
 from hud import Hud
 
-TOTAL_CELLS = 15
+TOTAL_CELLS = 5
 TOTAL_VIRUS = 1
 TOTAL_HS = 1
 TOTAL_ANTIBODIES = 4
@@ -81,7 +81,7 @@ class Lienzo(gtk.DrawingArea):
         
         #celulas
         self.annealedCells=cellList+stationList
-
+        self.virus=vir
 
         self.annealingCompleted=False
         self.initialized=False

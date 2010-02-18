@@ -11,12 +11,12 @@ class Virus(Sprite):
         self.width=DEFAULT_WIDTH
         self.height=DEFAULT_HEIGHT
         self.color=(0.3,0.6,0.5)
-        self.hp=1000
+        self.hp=2000
         self.velX=0.0;
         self.velY=0.0;
 
     def __str__(self):
-        return "The Virus pos=[%d,%d]" % (self.posX,self.posY)
+        return "The Virus  hp:%d pos=[%d,%d]" % (self.hp,self.posX,self.posY)
 
     def get_type(self):
         return "Virus"
