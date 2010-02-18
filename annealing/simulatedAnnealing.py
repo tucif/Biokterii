@@ -18,6 +18,8 @@ def route_energy(state):
 	for i in range(len(state)):
             if(isinstance(state[0], HealthStation)):
                 e += 1000
+            if(isinstance(state[-1], HealthStation)):
+                e += 1000
             e += distance( state[i-1], state[i] )
 	return e
 
