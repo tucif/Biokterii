@@ -1,5 +1,4 @@
 from anneal import *
-from display import display_lines
 from math import pow, sqrt
 from healthStation import HealthStation
 from display import *
@@ -39,7 +38,7 @@ def start_simulation(lienzo):
     #state, e = annealer.anneal(state, 10000000, 0.01, 18000*len(state), 9)
     #state, e = annealer.anneal(state, 100, 0.01, 180*len(state), 10)
     #print "%i mile route:" % e
-
+    lienzo.annealingCompleted=True
     for cell in state:
             print "\t", cell
     return state

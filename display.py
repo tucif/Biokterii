@@ -1,4 +1,5 @@
 from sprite import Sprite
+from virus import Virus
 
 DISPLAY_IDS=True
 

@@ -12,6 +12,8 @@ class Virus(Sprite):
         self.height=DEFAULT_HEIGHT
         self.color=(0.3,0.6,0.5)
         self.hp=1000
+        self.velX=0.0;
+        self.velY=0.0;
 
     def __str__(self):
         return "The Virus pos=[%d,%d]" % (self.posX,self.posY)
@@ -21,6 +23,8 @@ class Virus(Sprite):
 
     def update(self):
         Sprite.update(self)
+        self.posX+=self.velX
+        self.posY+=self.velY
 
     def paint(self,window):
         Sprite.paint(self,window)

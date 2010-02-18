@@ -11,7 +11,7 @@ import random
 
 pygtk.require('2.0')
 
-
+from sprite import Sprite
 from virus import Virus 
 from virus import DEFAULT_WIDTH as VIRUS_WIDTH, DEFAULT_HEIGHT as VIRUS_HEIGHT
 from cell import Cell
@@ -22,7 +22,7 @@ from antibody import Antibody
 from display import display_simulation
 from hud import Hud
 
-TOTAL_CELLS = 25
+TOTAL_CELLS = 5
 TOTAL_VIRUS = 1
 TOTAL_HS = 1
 TOTAL_ANTIBODIES = 4
@@ -43,7 +43,7 @@ stationList=[HealthStation(
                             ) for i in xrange(TOTAL_HS)]
 antibodyList=[Antibody() for i in xrange(TOTAL_ANTIBODIES)]
 
-#annealedCells = cellList+stationList
+annealedCells = cellList+stationList
 
 
 
@@ -82,6 +82,13 @@ class Lienzo(gtk.DrawingArea):
         #celulas
         self.annealedCells=cellList+stationList
 
+
+        self.annealingCompleted=False
+        self.initialized=False
+        self.allVisited=False
+        self.visitedCells=0
+        self.nextCell=None
+
         self.draggingObject = None
         self.corriendo = True
 
@@ -102,11 +109,47 @@ class Lienzo(gtk.DrawingArea):
         
         gobject.timeout_add(20, self.on_timer)
 
-
-
     def update(self):
-        
         self.queue_draw()
+        if self.annealingCompleted:
+            self.set_virus_vel()
+            vir[0].update()
+
+    
+
+    def set_virus_vel(self):
+        if not self.initialized:
+            self.initialized=True
+            vir[0].posX=self.annealedCells[0].posX
+            vir[0].posY=self.annealedCells[0].posY
+            self.nextCell=self.annealedCells[0]
+
+        if vir[0].posX>self.nextCell.posX:
+            vir[0].velX=-1
+        elif vir[0].posX<self.nextCell.posX:
+            vir[0].velX=1
+        else:
+            vir[0].velX=0
+
+        if vir[0].posY>self.nextCell.posY:
+            vir[0].velY=-1
+        elif vir[0].posY<self.nextCell.posY:
+            vir[0].velY=1
+        else:
+            vir[0].velY=0
+
+
+        if vir[0].posX==self.nextCell.posX and vir[0].posY==self.nextCell.posY:
+            print "next cell: "+str(self.nextCell)
+            if self.nextCell in self.annealedCells:
+                self.visitedCells=1+self.annealedCells.index(self.nextCell)
+
+            if self.visitedCells==len(self.annealedCells):
+                self.allVisited=True
+
+            if not self.allVisited:
+                self.nextCell=self.annealedCells[self.visitedCells]
+                print self.nextCell
 
     def paint(self, widget, event):
         """Nuestro metodo de pintado propio"""
