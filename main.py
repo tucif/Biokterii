@@ -81,7 +81,7 @@ class Lienzo(gtk.DrawingArea):
         
         #celulas
         self.annealedCells=cellList+stationList
-
+        self.virus=vir
 
         self.annealingCompleted=False
         self.initialized=False
