@@ -147,6 +147,11 @@ class Lienzo(gtk.DrawingArea):
         if vCenterX==cCenterX and vCenterY==cCenterY:
             print "next cell: "+str(self.nextCell)
             if self.nextCell in self.annealedCells:
+                if self.nextCell.get_type()=="Health Station":
+                    self.nextCell.alpha=(0.5);
+                if self.nextCell.get_type()=="Cell":
+                    self.nextCell.color=(1,0,0);
+                    
                 self.visitedCells=1+self.annealedCells.index(self.nextCell)
 
             if self.visitedCells==len(self.annealedCells):
