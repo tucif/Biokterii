@@ -48,7 +48,7 @@ annealedCells = cellList+stationList
 
 
 def update_annealing(widget, lienzo):
-    lienzo.annealedCells = start_simulation(lienzo)
+    lienzo.annealedCells = start_simulation(lienzo, vir)
 
 #Lienzo es donde se pintara todo
 class Lienzo(gtk.DrawingArea):

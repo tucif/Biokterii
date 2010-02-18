@@ -12,18 +12,21 @@ def route_move(state):
 	b = random.randint( 0, len(state)-1 )
 	state[a], state[b] = state[b], state[a]
 
-def route_energy(state):
+def route_energy(state, virus):
 	"""Calculates the energy required to complete the route."""
 	e = 0
+        salud = virus[0].hp
 	for i in range(len(state)):
             if(isinstance(state[0], HealthStation)):
                 e += 1000
-            if(isinstance(state[-1], HealthStation)):
+            if
+            dist = distance( state[i-1], state[i] )
+            if(salud < dist):
                 e += 1000
-            e += distance( state[i-1], state[i] )
+            e +=  dist
 	return e
 
-def start_simulation(lienzo):
+def start_simulation(lienzo, virus):
     """Recieves a cell list"""
 
     # Initial configuration (Random)
@@ -34,8 +37,8 @@ def start_simulation(lienzo):
     tMin=0.001
     steps=180*len(state)
     updates=10
-
-    annealer = Annealer(route_energy, route_move,state, tMax, tMin, steps,lienzo,updates)
+    
+    annealer = Annealer(route_energy, route_move,state, tMax, tMin, steps,lienzo,virus,updates)
     annealer.start()
     #state, e = annealer.anneal(state, 10000000, 0.01, 18000*len(state), 9)
     #state, e = annealer.anneal(state, 100, 0.01, 180*len(state), 10)
