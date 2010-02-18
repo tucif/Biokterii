@@ -1,4 +1,5 @@
 from anneal import *
+#from healthStation import healRatio
 from math import pow, sqrt
 from healthStation import HealthStation
 from display import *
@@ -15,15 +16,22 @@ def route_move(state):
 def route_energy(state, virus):
 	"""Calculates the energy required to complete the route."""
 	e = 0
+        sumDistancia = 0
         salud = virus[0].hp
+        if(isinstance(state[0], HealthStation)):
+                e += 1000
+
 	for i in range(len(state)):
-            if(isinstance(state[0], HealthStation)):
-                e += 1000
-            if
             dist = distance( state[i-1], state[i] )
-            if(salud < dist):
-                e += 1000
             e +=  dist
+            #if(state)
+
+
+        #for i in range(len(state)):
+
+
+        #for i in range(len(state)):
+            #sumDistancia +=  e
 	return e
 
 def start_simulation(lienzo, virus):
