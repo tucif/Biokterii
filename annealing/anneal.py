@@ -43,7 +43,7 @@ class Annealer(Thread):
 	energy and make moves on a state.  The temperature schedule for
 	annealing may be provided manually or estimated automatically.
 	"""
-	def __init__(self, energy, move,state,Tmax, Tmin, steps, lienzo,updates=0):
+	def __init__(self, energy, move,state,Tmax, Tmin, steps, lienzo,virus,updates=0):
 		self.energy = energy  # function to calculate energy of a state
 		self.move = move      # function to make a random change to a state
                 self.state=state
@@ -52,6 +52,7 @@ class Annealer(Thread):
                 self.steps=steps
                 self.updates=updates
                 self.lienzo=lienzo
+                self.virus=virus
                 Thread.__init__( self )
         def run(self):
             self.anneal(self.state,self.Tmax,self.Tmin,self.steps,self.updates)
@@ -109,7 +110,7 @@ class Annealer(Thread):
 		
 		# Note initial state
 		T = Tmax
-		E = self.energy(state)
+		E = self.energy(state,self.virus)
 		prevState = copy.deepcopy(state)
 		prevEnergy = E
 		bestState = copy.deepcopy(state)
@@ -125,7 +126,7 @@ class Annealer(Thread):
                     step += 1
                     T = Tmax * math.exp( Tfactor * step / steps )
                     self.move(state)
-                    E = self.energy(state)
+                    E = self.energy(state,self.virus)
                     dE = E - prevEnergy
                     trials += 1
                     if dE > 0.0 and math.exp(-dE/T) < random.random():
