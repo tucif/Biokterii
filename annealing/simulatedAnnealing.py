@@ -22,20 +22,19 @@ def route_energy(state):
             e += distance( state[i-1], state[i] )
 	return e
 
-def start_simulation(cellList):
+def start_simulation(lienzo):
     """Recieves a cell list"""
 
     # Initial configuration (Random)
-    state = cellList
+    state = lienzo.annealedCells
     random.shuffle(state)
 
-    annealer = Annealer(route_energy, route_move)
-    state, e = annealer.anneal(state, 10000000, 0.01, 18000*len(state), 9)
+    annealer = Annealer(route_energy, route_move,state, 100, 0.01, 180*len(state),lienzo,10)
+    annealer.start()
+    #state, e = annealer.anneal(state, 10000000, 0.01, 18000*len(state), 9)
     #state, e = annealer.anneal(state, 100, 0.01, 180*len(state), 10)
-    
-    x = distance(state[0], state[-1])
+    #print "%i mile route:" % e
 
-    print "%i mile route:" % (e-x)
     for cell in state:
             print "\t", cell
     return state

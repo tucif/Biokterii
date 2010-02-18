@@ -25,6 +25,7 @@ import math
 import random
 import sys
 import time
+from threading import Thread
 
 def round_figures(x, n):
 	"""Returns x rounded to n significant figures."""
@@ -37,16 +38,25 @@ def time_string(seconds):
 	m, s = divmod(s, 60)     # split remainder into minutes and seconds
 	return '%4i:%02i:%02i' % (h, m, s)
 
-class Annealer:
+class Annealer(Thread):
 	"""Performs simulated annealing by calling functions to calculate
 	energy and make moves on a state.  The temperature schedule for
 	annealing may be provided manually or estimated automatically.
 	"""
-	def __init__(self, energy, move):
+	def __init__(self, energy, move,state,Tmax, Tmin, steps, lienzo,updates=0):
 		self.energy = energy  # function to calculate energy of a state
 		self.move = move      # function to make a random change to a state
-	
-	def anneal(self, state, Tmax, Tmin, steps, updates=0):
+                self.state=state
+                self.Tmax=Tmax
+                self.Tmin=Tmin
+                self.steps=steps
+                self.updates=updates
+                self.lienzo=lienzo
+                Thread.__init__( self )
+        def run(self):
+            self.anneal(self.state,self.Tmax,self.Tmin,self.steps,self.updates)
+
+        def anneal(self, state, Tmax, Tmin, steps, updates=0):
 		"""Minimizes the energy of a system by simulated annealing.
 		
 		Keyword arguments:
@@ -111,117 +121,33 @@ class Annealer:
 		
 		# Attempt moves to new states
 		while step < steps:
-			step += 1
-			T = Tmax * math.exp( Tfactor * step / steps )
-			self.move(state)
-			E = self.energy(state)
-			dE = E - prevEnergy
-			trials += 1
-			if dE > 0.0 and math.exp(-dE/T) < random.random():
-				# Restore previous state
-				state = copy.deepcopy(prevState)
-				E = prevEnergy
-			else:
-				# Accept new state and compare to best state
-				accepts += 1
-				if dE < 0.0:
-					improves += 1
-				prevState = copy.deepcopy(state)
-				prevEnergy = E
-				if E < bestEnergy:
-					bestState = copy.deepcopy(state)
-					bestEnergy = E
-			if updates > 1:
-				if step // updateWavelength > (step-1) // updateWavelength:
-					update(T, E, float(accepts)/trials, float(improves)/trials)
-					trials, accepts, improves = 0, 0, 0
+                    self.lienzo.annealedCells=bestState
+                    step += 1
+                    T = Tmax * math.exp( Tfactor * step / steps )
+                    self.move(state)
+                    E = self.energy(state)
+                    dE = E - prevEnergy
+                    trials += 1
+                    if dE > 0.0 and math.exp(-dE/T) < random.random():
+                            # Restore previous state
+                            state = copy.deepcopy(prevState)
+                            E = prevEnergy
+                    else:
+                            # Accept new state and compare to best state
+                            accepts += 1
+                            if dE < 0.0:
+                                    improves += 1
+                            prevState = copy.deepcopy(state)
+                            prevEnergy = E
+                            if E < bestEnergy:
+                                    bestState = copy.deepcopy(state)
+                                    bestEnergy = E
+                    if updates > 1:
+                            if step // updateWavelength > (step-1) // updateWavelength:
+                                    update(T, E, float(accepts)/trials, float(improves)/trials)
+                                    trials, accepts, improves = 0, 0, 0
 		
 		# Return best state and energy
-		return bestState, bestEnergy
-	
-	def auto(self, state, minutes, steps=2000):
-		"""Minimizes the energy of a system by simulated annealing with
-		automatic selection of the temperature schedule.
-		
-		Keyword arguments:
-		state -- an initial arrangement of the system
-		minutes -- time to spend annealing (after exploring temperatures)
-		steps -- number of steps to spend on each stage of exploration
-		
-		Returns the best state and energy found."""
-		
-		def run(state, T, steps):
-			"""Anneals a system at constant temperature and returns the state,
-			energy, rate of acceptance, and rate of improvement."""
-			E = self.energy(state)
-			prevState = copy.deepcopy(state)
-			prevEnergy = E
-			accepts, improves = 0, 0
-			for step in range(steps):
-				self.move(state)
-				E = self.energy(state)
-				dE = E - prevEnergy
-				if dE > 0.0 and math.exp(-dE/T) < random.random():
-					state = copy.deepcopy(prevState)
-					E = prevEnergy
-				else:
-					accepts += 1
-					if dE < 0.0:
-						improves += 1
-					prevState = copy.deepcopy(state)
-					prevEnergy = E
-			return state, E, float(accepts)/steps, float(improves)/steps
-		
-		step = 0
-		start = time.time()
-		
-		print 'Attempting automatic simulated anneal...'
-		
-		# Find an initial guess for temperature
-		T = 0.0
-		E = self.energy(state)
-		while T == 0.0:
-			step += 1
-			self.move(state)
-			T = abs( self.energy(state) - E )
-		
-		print 'Exploring temperature landscape:'
-		print ' Temperature        Energy    Accept   Improve     Elapsed'
-		def update(T, E, acceptance, improvement):
-			"""Prints the current temperature, energy, acceptance rate,
-			improvement rate, and elapsed time."""
-			elapsed = time.time() - start
-			print '%12.2f  %12.2f  %7.2f%%  %7.2f%%  %s' % \
-				(T, E, 100.0*acceptance, 100.0*improvement, time_string(elapsed))
-		
-		# Search for Tmax - a temperature that gives 98% acceptance
-		state, E, acceptance, improvement = run(state, T, steps)
-		step += steps
-		while acceptance > 0.98:
-			T = round_figures(T/1.5, 2)
-			state, E, acceptance, improvement = run(state, T, steps)
-			step += steps
-			update(T, E, acceptance, improvement)
-		while acceptance < 0.98:
-			T = round_figures(T*1.5, 2)
-			state, E, acceptance, improvement = run(state, T, steps)
-			step += steps
-			update(T, E, acceptance, improvement)
-		Tmax = T
-		
-		# Search for Tmin - a temperature that gives 0% improvement
-		while improvement > 0.0:
-			T = round_figures(T/1.5, 2)
-			state, E, acceptance, improvement = run(state, T, steps)
-			step += steps
-			update(T, E, acceptance, improvement)
-		Tmin = T
-		
-		# Calculate anneal duration
-		elapsed = time.time() - start
-		duration = round_figures(int(60.0 * minutes * step / elapsed), 2)
-		
-		# Perform anneal
-		print 'Annealing from %.2f to %.2f over %i steps:' % (Tmax, Tmin, duration)
-		return self.anneal(state, Tmax, Tmin, duration, 20)
-            
+
+		#return bestState, bestEnergy
+                
