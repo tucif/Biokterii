@@ -1,5 +1,8 @@
 import random
 
+def evolve(virList):
+    nextGeneration=reproduction(virList)
+
 def reproduction(virList):
 
     populationFitness=0
@@ -29,5 +32,6 @@ def reproduction(virList):
                 break
 
     print "selectedMembers: \n"+str([str(vir) for vir in selectedVirus])
+    return selectedVirus
 
-
+def crossover(virList):

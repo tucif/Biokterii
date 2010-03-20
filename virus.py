@@ -16,10 +16,10 @@ class Virus(Sprite):
         self.isDead=False
         self.velX=0.0
         self.velY=0.0
-        self.tempLevel= random.randint(0,100)    #0~100
-        self.phLevel=random.randint(0,14)       #0~14
-        self.aggresiveness=random.randint(0,100) #0~100
-        self.visibility=random.randint(0,100)    #0~100
+        self.tempLevel= random.randint(0,100)    #0~127
+        self.phLevel=random.randint(0,14)       #0~15
+        self.aggresiveness=random.randint(0,100) #0~127
+        self.visibility=random.randint(0,100)    #0~127
 
         self.fitness=0
 
@@ -30,10 +30,10 @@ class Virus(Sprite):
         return "Virus"
 
     def update_fitness(self,environment):
-        self.tempFitness=100-abs(environment.temp-self.tempLevel)
-        self.phFitness=14-abs(environment.ph-self.phLevel)
-        self.reactFitness=100-abs(environment.reactivity-self.aggresiveness)
-        self.radarFitness=100-abs(environment.radar-self.visibility)
+        self.tempFitness=127-abs(environment.temp-self.tempLevel)
+        self.phFitness=15-abs(environment.ph-self.phLevel)
+        self.reactFitness=127-abs(environment.reactivity-self.aggresiveness)
+        self.radarFitness=127-abs(environment.radar-self.visibility)
 
         self.fitness=self.tempFitness+self.phFitness+self.reactFitness+self.radarFitness
 
