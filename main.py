@@ -12,17 +12,22 @@ pygtk.require('2.0')
 from sprite import Sprite
 from virus import Virus 
 from virus import DEFAULT_WIDTH as VIRUS_WIDTH, DEFAULT_HEIGHT as VIRUS_HEIGHT
+from environment import Environment
 from display import display_simulation
 from hud import Hud
 
+
 TOTAL_VIRUS = 10
+TOTAL_ENVIRONMENTS=1
 
 WINDOW_SIZE = 700
 
-vir =[Virus(
+virList =[Virus(
            random.randint(0,WINDOW_SIZE-VIRUS_WIDTH),
            random.randint(0,WINDOW_SIZE-VIRUS_HEIGHT)
             ) for i in xrange(TOTAL_VIRUS)]
+
+environmentList=[Environment()for i in xrange(TOTAL_ENVIRONMENTS)]
 
 #Lienzo es donde se pintara todo
 class Lienzo(gtk.DrawingArea):
@@ -54,7 +59,7 @@ class Lienzo(gtk.DrawingArea):
         self.hud=Hud()
         
         #celulas
-        self.virus=vir
+        self.virus=virList
 
         self.draggingObject = None
         self.corriendo = True
@@ -77,8 +82,9 @@ class Lienzo(gtk.DrawingArea):
 
     def update(self):
         self.queue_draw()
-        if not vir[0].isDead:
-            vir[0].update()  
+        for virus in virList:
+            if not virus.isDead:
+                virus.update()
             
     def paint(self, widget, event):
         """Nuestro metodo de pintado propio"""
@@ -92,8 +98,9 @@ class Lienzo(gtk.DrawingArea):
 
         #pintar a los agentes
         #display_lines(cr, self.annealedCells)
-        display_simulation(cr,vir)
-        self.hud.display(cr, vir)
+        display_simulation(cr,virList)
+        self.hud.display_viruses(cr, virList)
+        self.hud.display_environment(cr,environmentList)
 
         #pintar efecto de selección sobre un agente
         if self.objetoSeleccionado:
@@ -109,7 +116,7 @@ class Lienzo(gtk.DrawingArea):
     def button_press(self,widget,event):
         if event.button == 1:
             self.objetoSeleccionado=[]
-            lstTemp = vir
+            lstTemp = virList
             for ob in lstTemp:
                 if ob.drag(event.x,event.y):
                     self.draggingObject = ob

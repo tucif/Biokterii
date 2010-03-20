@@ -7,9 +7,9 @@ class Hud():
         self.allVisible=True
         self.idVisible=True
         self.boundingBoxVisible=True
-        self.window=None;
+        self.window=None
 
-    def display(self,window,objectList):
+    def display_viruses(self,window,objectList):
 
         if self.allVisible:
             if self.idVisible:
@@ -21,3 +21,12 @@ class Hud():
                         window.move_to(posXText,posYText)
                         window.set_source_rgba(1,1,1,0.7)
                         window.show_text(text)
+
+    def display_environment(self,window,environmentList):
+        for environment in environmentList:
+            posXText=environment.posX+5
+            posYText=environment.posY+20
+            text="holaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            window.move_to(posXText,posYText)
+            window.set_source_rgba(1,1,1,0.7)
+            window.show_text(text)
