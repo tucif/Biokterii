@@ -1,11 +1,14 @@
 import random;
 
+from main import WINDOW_SIZE
+
 class Environment:
-    def __init__(self):
-        self.posX=0;
-        self.posY=0;
-        self.width=0;
-        self.height=0;
+    def __init__(self,posX=0,posY=0,width=WINDOW_SIZE,height=WINDOW_SIZE):
+        self.posX=posX
+        self.posY=posY
+        self.width=width
+        self.height=height
+        self.virusList
 
         #properties
         self.temp= random.randint(0,100)    #0~100

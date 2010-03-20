@@ -26,7 +26,7 @@ class Hud():
         for environment in environmentList:
             posXText=environment.posX+5
             posYText=environment.posY+20
-            text="holaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            text="Environment properties: temp:%d | ph:%d | reactivity: %d | radars: %d" % (environment.temp,environment.ph,environment.reactivity,environment.radar)
             window.move_to(posXText,posYText)
             window.set_source_rgba(1,1,1,0.7)
             window.show_text(text)
