@@ -15,7 +15,7 @@ class Hud():
             if self.idVisible:
                 for object in objectList:
                     if isinstance(object,Sprite):
-                        text=str(object)+str(objectList.index(object))
+                        text=str(object)
                         posXText=object.posX+object.width/2-(len(text)/2)*5
                         posYText=object.posY+ID_PADDING[1]
                         window.move_to(posXText,posYText)
