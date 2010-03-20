@@ -1,59 +1,28 @@
 # coding: utf-8
 
-from annealing.simulatedAnnealing import start_simulation
 import gtk
 #import cairo
 import gobject
 import pygtk
 import random
-#from datetime import datetime
-from math import pow, sqrt
+
 
 pygtk.require('2.0')
 
 from sprite import Sprite
 from virus import Virus 
 from virus import DEFAULT_WIDTH as VIRUS_WIDTH, DEFAULT_HEIGHT as VIRUS_HEIGHT
-from cell import Cell
-from cell import DEFAULT_WIDTH as CELL_WIDTH, DEFAULT_HEIGHT as CELL_HEIGHT
-from healthStation import HealthStation
-from healthStation import DEFAULT_HEIGHT as HS_HEIGHT, DEFAULT_WIDTH as HS_WIDTH
-from antibody import Antibody
 from display import display_simulation
 from hud import Hud
 
-TOTAL_CELLS = 2
-TOTAL_VIRUS = 1
-TOTAL_HS = 1
-TOTAL_ANTIBODIES = 0
+TOTAL_VIRUS = 10
+
 WINDOW_SIZE = 700
 
 vir =[Virus(
            random.randint(0,WINDOW_SIZE-VIRUS_WIDTH),
            random.randint(0,WINDOW_SIZE-VIRUS_HEIGHT)
             ) for i in xrange(TOTAL_VIRUS)]
-cellList=[Cell(
-                random.randint(0,WINDOW_SIZE-CELL_WIDTH),
-                random.randint(0,WINDOW_SIZE-CELL_HEIGHT)
-                ) for i in xrange(TOTAL_CELLS)]
-#stationList=[HealthStation(
-#                            WINDOW_SIZE/TOTAL_CELLS,
-#                            random.randint(0,WINDOW_SIZE-HS_WIDTH),
-#                            random.randint(0,WINDOW_SIZE-HS_HEIGHT)
-#                            ) for i in xrange(TOTAL_HS)]
-stationList=[HealthStation(
-                            500,
-                            random.randint(0,WINDOW_SIZE-HS_WIDTH),
-                            random.randint(0,WINDOW_SIZE-HS_HEIGHT)
-                            ) for i in xrange(TOTAL_HS)]
-antibodyList=[Antibody() for i in xrange(TOTAL_ANTIBODIES)]
-
-annealedCells = cellList+stationList
-
-
-
-def update_annealing(widget, lienzo):
-    lienzo.annealedCells = start_simulation(lienzo, vir)
 
 #Lienzo es donde se pintara todo
 class Lienzo(gtk.DrawingArea):
@@ -85,14 +54,7 @@ class Lienzo(gtk.DrawingArea):
         self.hud=Hud()
         
         #celulas
-        self.annealedCells=cellList+stationList
         self.virus=vir
-
-        self.annealingCompleted=False
-        self.initialized=False
-        self.allVisited=False
-        self.visitedCells=0
-        self.nextCell=None
 
         self.draggingObject = None
         self.corriendo = True
@@ -111,84 +73,12 @@ class Lienzo(gtk.DrawingArea):
 
     def init_simulation(self):
         """Inicializacion de valores"""
-        
         gobject.timeout_add(20, self.on_timer)
 
     def update(self):
         self.queue_draw()
-        if self.annealingCompleted and not vir[0].isDead:
-            self.set_virus_vel()
-            vir[0].update()
-
-    
-
-    def set_virus_vel(self):
-        if not self.initialized:
-            self.initialized=True
-            vir[0].posX=self.annealedCells[0].get_center()[0]-(vir[0].width/2)
-            vir[0].posY=self.annealedCells[0].get_center()[1]-(vir[0].height/2)
-            self.nextCell=self.annealedCells[0]
-
-        [vCenterX,vCenterY]=vir[0].get_center()
-        [cCenterX,cCenterY]=self.nextCell.get_center()
-
-        deltaX=abs(vCenterX-cCenterX)
-        deltaY=abs(vCenterY-cCenterY)
-
-        if vCenterX>cCenterX:
-            vir[0].velX=-1.0*self.vel_with_delta(deltaX,deltaY,'X')
-        elif vCenterX<cCenterX:
-            vir[0].velX=1.0*self.vel_with_delta(deltaX,deltaY,'X')
-        else:
-            vir[0].velX=0
-
-        if vCenterY>cCenterY:
-            vir[0].velY=-1.0*self.vel_with_delta(deltaX,deltaY,'Y')
-        elif vCenterY<cCenterY:
-            vir[0].velY=1.0*self.vel_with_delta(deltaX,deltaY,'Y')
-        else:
-            vir[0].velY=0
-
-        if vCenterX==cCenterX and vCenterY==cCenterY:
-            print "next cell: "+str(self.nextCell)
-            if self.nextCell in self.annealedCells:
-                if self.nextCell.get_type()=="Health Station":
-                    self.nextCell.alpha=(0.5);
-                if self.nextCell.get_type()=="Cell" and not vir[0].isDead:
-                    self.nextCell.color=(1,0,0);
-                    
-                self.visitedCells=1+self.annealedCells.index(self.nextCell)
-
-            if self.visitedCells==len(self.annealedCells):
-                self.allVisited=True
-
-            lastCell=self.nextCell
-
-            if not self.allVisited:
-                self.nextCell=self.annealedCells[self.visitedCells]
-                vir[0].hp-=self.distance(lastCell, self.nextCell)
-
-            if isinstance(lastCell,HealthStation):
-                vir[0].hp+=lastCell.healRatio
-
-            if vir[0].hp<0:
-                vir[0].color=(1,0,0)
-                vir[0].alpha=(0.5)
-
-    def distance(self,a, b):
-        return sqrt(pow(a.posX - b.posX,2) + pow(a.posY - b.posY,2))
-
-    def vel_with_delta(self,deltaX,deltaY,axis):
-        if axis=='X':
-            if deltaX>deltaY:
-                return 1
-            else:
-                return deltaX/deltaY
-        else:
-            if deltaY>deltaX:
-                return 1
-            else:
-                return deltaY/deltaX
+        if not vir[0].isDead:
+            vir[0].update()  
             
     def paint(self, widget, event):
         """Nuestro metodo de pintado propio"""
@@ -202,10 +92,8 @@ class Lienzo(gtk.DrawingArea):
 
         #pintar a los agentes
         #display_lines(cr, self.annealedCells)
-        display_simulation(cr,vir,self.annealedCells,antibodyList)
-        self.hud.display(cr, vir+self.annealedCells+antibodyList)
-
-        
+        display_simulation(cr,vir)
+        self.hud.display(cr, vir)
 
         #pintar efecto de selección sobre un agente
         if self.objetoSeleccionado:
@@ -216,15 +104,12 @@ class Lienzo(gtk.DrawingArea):
 
             cr.stroke()
 
-        #pintar la información del agente seleccionado
-        
-  
         
     #Para drag & drop
     def button_press(self,widget,event):
         if event.button == 1:
             self.objetoSeleccionado=[]
-            lstTemp = antibodyList+vir+self.annealedCells
+            lstTemp = vir
             for ob in lstTemp:
                 if ob.drag(event.x,event.y):
                     self.draggingObject = ob
@@ -255,7 +140,6 @@ class Main(gtk.Window):
         #mainBox contiene el menu superior, contentBox(menu,lienzo) y el menu inferior
         self.mainBox = gtk.VBox(False,0)
         self.mainBox.set_size_request(WINDOW_SIZE,WINDOW_SIZE)
-
         
         #contentBox contiene el menu lateral y lienzo
         self.contentBox= gtk.HBox(False,0) #Recibe False para no se homogeneo
@@ -265,7 +149,6 @@ class Main(gtk.Window):
         
         self.contentBox.pack_start(self.lienzo, expand=True, fill=True, padding=0)
 
-
         #Menu bar
         menuBar = gtk.MenuBar()
 
@@ -274,7 +157,7 @@ class Main(gtk.Window):
         filem.set_submenu(filemenu)
 
         annealMenu = gtk.MenuItem("Annealing")
-        annealMenu.connect("activate", update_annealing, self.lienzo)
+#        annealMenu.connect("activate", update_annealing, self.lienzo)
         filemenu.append(annealMenu)
 
         exit = gtk.MenuItem("Exit")
@@ -285,7 +168,6 @@ class Main(gtk.Window):
 
         menuBox = gtk.HBox(False, 2)
         menuBox.pack_start(menuBar, False, False, 0)
-
 
         #Empaquetado de todos los controles
         self.mainBox.pack_start(menuBox,expand=True,fill=True,padding=0)
@@ -301,9 +183,6 @@ class Main(gtk.Window):
 
     def correr_lienzo(self, widget):
         self.lienzo.correr()
-
-            
-
 
 if __name__ == '__main__':
     Main()
