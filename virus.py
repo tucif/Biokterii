@@ -49,7 +49,7 @@ class Virus(Sprite):
 
     def update_fitness(self,environment):
         self.tempFitness=127-abs(environment.temp-self.tempLevel)
-        self.phFitness=(15-abs(environment.ph-self.phLevel))*8.46
+        self.phFitness=127-(15-abs(environment.ph-self.phLevel))*8.46
         self.reactFitness=127-abs(environment.reactivity-self.aggresiveness)
         self.radarFitness=127-abs(environment.radar-self.visibility)
 
@@ -71,16 +71,12 @@ class Virus(Sprite):
     def paint(self,window):
         #Sprite.paint(self,window)
         pixbuf = self.imagen
-
         pixbuf=pixbuf.scale_simple(self.width,self.height,gtk.gdk.INTERP_BILINEAR)
-        
+
         #temperature representation
 
         #ph representation
 
-        #aggresiveness representation
-
-        #visibility representation
         window.save()
         ThingMatrix = cairo.Matrix ( 1, 0, 0, 1, 0, 0 )
 
@@ -88,6 +84,7 @@ class Virus(Sprite):
         window.transform ( ThingMatrix ) # Changes the context to reflect that
 
         cairo.Matrix.translate(ThingMatrix, self.posX+self.width/2,self.posY+self.height/2)
+        #aggresiveness representation
         cairo.Matrix.rotate( ThingMatrix, self.rot ) # Do the rotation
         cairo.Matrix.translate(ThingMatrix, -(self.posX+self.width/2),-(self.posY+self.height/2))
 
@@ -98,11 +95,21 @@ class Virus(Sprite):
 
         window.restore()
         self.rot+=self.deltaRot
+
+        #visibility representation
         
+
         #ends strange stuff
 
+
         #draw fitness line
-        window.set_source_rgba(1,0,0,1)
+        if self.fitnessPercentage<=25:
+            red=1
+            green=0
+        else:
+            green=((self.fitnessPercentage-25)*1.3333)/100
+            red = 1-green
+        window.set_source_rgba(red,green,0,1)
         window.rectangle(self.posX+1,self.posY+self.height+1,float(self.fitnessPercentage*(self.width-1)/100), 4)
         window.fill()
 
