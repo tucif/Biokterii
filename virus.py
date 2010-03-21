@@ -10,7 +10,12 @@ DEFAULT_WIDTH=50
 DEFAULT_HEIGHT=50
 
 class Virus(Sprite):
-    def __init__(self, posX=0, posY=0):
+    def __init__(self, posX=0, posY=0,
+                 tempLevel = 0,
+                 phLevel= 0,
+                 aggresiveness=0,
+                 visibility=0
+                 ):
         Sprite.__init__(self,posX,posY)
         self.width=DEFAULT_WIDTH
         self.height=DEFAULT_HEIGHT
@@ -20,10 +25,10 @@ class Virus(Sprite):
         self.isDead=False
         self.velX=0.0
         self.velY=0.0
-        self.tempLevel= random.randint(0,100)    #0~127
-        self.phLevel=random.randint(0,14)       #0~15
-        self.aggresiveness=random.randint(0,100) #0~127
-        self.visibility=random.randint(0,100)    #0~127
+        self.tempLevel= tempLevel    #0~127
+        self.phLevel= phLevel       #0~15
+        self.aggresiveness=aggresiveness #0~127
+        self.visibility=visibility    #0~127
 
         self.fitness=0
         self.fitnessPercentage=0
@@ -33,6 +38,8 @@ class Virus(Sprite):
         #rotation
         self.deltaRot=(float(self.aggresiveness)*100/127)*0.1/100
         self.rot=0
+
+
 
     def __str__(self):
         return "Virus [%d|%d|%d|%d] ->fit:%d" % (self.tempLevel, self.phLevel, self.aggresiveness, self.visibility, self.fitness)
