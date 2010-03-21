@@ -17,11 +17,15 @@ from display import display_simulation
 from hud import Hud
 from constants import WINDOW_SIZE, TOTAL_VIRUS, TOTAL_ENVIRONMENTS
 
-from genetics.geneticAlgorithm import reproduction
+from genetics.geneticAlgorithm import evolve
 
 virList =[Virus(
            random.randint(0,WINDOW_SIZE-VIRUS_WIDTH),
-           random.randint(0,WINDOW_SIZE-VIRUS_HEIGHT)
+           random.randint(0,WINDOW_SIZE-VIRUS_HEIGHT),
+           random.randint(0,127),
+           random.randint(0,15),
+           random.randint(0,127),
+           random.randint(0,127)
             ) for i in xrange(TOTAL_VIRUS)]
 
 environmentList=[Environment()for i in xrange(TOTAL_ENVIRONMENTS)]
@@ -29,7 +33,10 @@ environmentList=[Environment()for i in xrange(TOTAL_ENVIRONMENTS)]
 for virus in virList:
     virus.update_fitness(environmentList[0])
 
-reproduction(virList)
+virList = evolve(virList, environmentList[0])
+
+for virus in virList:
+    virus.update_fitness(environmentList[0])
 
 #Lienzo es donde se pintara todo
 class Lienzo(gtk.DrawingArea):
