@@ -13,6 +13,9 @@ def evolve(virList, environment):
     newVirList = crossover(nextGeneration)
     for vir in newVirList:
         vir.update_fitness(environment)
+        oldVir = virList.pop()
+        vir.posX = oldVir.posX
+        vir.posY = oldVir.posY
         print vir
 
     return newVirList
@@ -66,10 +69,7 @@ def crossover(virList):
     for vir in mateList:
         print vir
     newPopulation = mate(mateList)
-    for newVir in newPopulation:
-        oldVir = virList.pop()
-        newVir.posX = oldVir.posX
-        newVir.posY = oldVir.posY
+    for newVir in newPopulation:        
         if random.randint(0,100)==42:
             print "Hubo mutacion en %s"%str(newVir)
             newVir = mutation(newVir)
