@@ -33,5 +33,3 @@ def reproduction(virList):
 
     print "selectedMembers: \n"+str([str(vir) for vir in selectedVirus])
     return selectedVirus
-
-def crossover(virList):

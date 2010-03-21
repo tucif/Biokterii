@@ -1,9 +1,13 @@
 import random
+import gtk, gobject, cairo
 
 from sprite import Sprite
+from constants import VIRUS_IMAGE
+from constants import WINDOW_SIZE
+from constants import MAX_FITNESS
 
-DEFAULT_WIDTH=20
-DEFAULT_HEIGHT=20
+DEFAULT_WIDTH=50
+DEFAULT_HEIGHT=50
 
 class Virus(Sprite):
     def __init__(self, posX=0, posY=0):
@@ -22,6 +26,13 @@ class Virus(Sprite):
         self.visibility=random.randint(0,100)    #0~127
 
         self.fitness=0
+        self.fitnessPercentage=0
+
+        self.imagen=VIRUS_IMAGE
+
+        #rotation
+        self.deltaRot=(float(self.aggresiveness)*100/127)*0.1/100
+        self.rot=0
 
     def __str__(self):
         return "Virus [%d|%d|%d|%d] ->fit:%d" % (self.tempLevel, self.phLevel, self.aggresiveness, self.visibility, self.fitness)
@@ -31,11 +42,13 @@ class Virus(Sprite):
 
     def update_fitness(self,environment):
         self.tempFitness=127-abs(environment.temp-self.tempLevel)
-        self.phFitness=15-abs(environment.ph-self.phLevel)
+        self.phFitness=(15-abs(environment.ph-self.phLevel))*8.46
         self.reactFitness=127-abs(environment.reactivity-self.aggresiveness)
         self.radarFitness=127-abs(environment.radar-self.visibility)
 
         self.fitness=self.tempFitness+self.phFitness+self.reactFitness+self.radarFitness
+
+        self.fitnessPercentage=float(self.fitness)*100/MAX_FITNESS
 
     def update(self):
         Sprite.update(self)
@@ -49,5 +62,46 @@ class Virus(Sprite):
             self.isDead=False;
 
     def paint(self,window):
-        Sprite.paint(self,window)
+        #Sprite.paint(self,window)
+        pixbuf = self.imagen
+
+        pixbuf=pixbuf.scale_simple(self.width,self.height,gtk.gdk.INTERP_BILINEAR)
+        
+        #temperature representation
+
+        #ph representation
+
+        #aggresiveness representation
+
+        #visibility representation
+        window.save()
+        ThingMatrix = cairo.Matrix ( 1, 0, 0, 1, 0, 0 )
+
+        ## Next, move the drawing to it's x,y
+        window.transform ( ThingMatrix ) # Changes the context to reflect that
+
+        cairo.Matrix.translate(ThingMatrix, self.posX+self.width/2,self.posY+self.height/2)
+        cairo.Matrix.rotate( ThingMatrix, self.rot ) # Do the rotation
+        cairo.Matrix.translate(ThingMatrix, -(self.posX+self.width/2),-(self.posY+self.height/2))
+
+        window.transform ( ThingMatrix ) # and commit it to the context
+
+        window.set_source_pixbuf(pixbuf,self.posX,self.posY)
+        window.paint()
+
+        window.restore()
+        self.rot+=self.deltaRot
+        
+        #ends strange stuff
+
+        #draw fitness line
+        window.set_source_rgba(1,0,0,1)
+        window.rectangle(self.posX+1,self.posY+self.height+1,float(self.fitnessPercentage*(self.width-1)/100), 4)
+        window.fill()
+
+        #draw fitness line container
+        window.set_line_width(1)
+        window.set_source_rgba(1,1,1,1)
+        window.rectangle(self.posX,self.posY+self.height,self.width, 5)
+        window.stroke()
 
