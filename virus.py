@@ -39,8 +39,6 @@ class Virus(Sprite):
         self.deltaRot=(float(self.aggresiveness)*100/127)*0.1/100
         self.rot=0
 
-
-
     def __str__(self):
         return "Virus [%d|%d|%d|%d] ->fit:%d @ (%f,%f)" % (self.tempLevel, self.phLevel, self.aggresiveness, self.visibility, self.fitness, self.posX,self.posY)
 
