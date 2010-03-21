@@ -4,6 +4,7 @@ import gtk
 #import cairo
 import gobject
 import pygtk
+
 import random
 
 
@@ -74,6 +75,13 @@ class Lienzo(gtk.DrawingArea):
         #celulas
         self.virus=virList
 
+        self.virus_meta = Virus(20,35,
+                                environmentList[0].temp,
+                                environmentList[0].ph,
+                                environmentList[0].reactivity,
+                                environmentList[0].radar)
+        self.virus_meta.update_fitness(environmentList[0])
+
         self.draggingObject = None
         self.corriendo = True
 
@@ -95,6 +103,7 @@ class Lienzo(gtk.DrawingArea):
 
     def update(self):
         self.queue_draw()
+        self.virus_meta.update()
         for virus in self.virus:
             if not virus.isDead:
                 virus.update()
@@ -112,7 +121,8 @@ class Lienzo(gtk.DrawingArea):
         #pintar a los agentes
         #display_lines(cr, self.annealedCells)
         display_simulation(cr,self.virus)
-        self.hud.display_viruses(cr, self.virus)
+        self.virus_meta.paint(cr)
+        self.hud.display_viruses(cr, self.virus+[self.virus_meta])
         self.hud.display_environment(cr,environmentList)
 
         #pintar efecto de selección sobre un agente
