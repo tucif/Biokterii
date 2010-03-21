@@ -33,10 +33,14 @@ environmentList=[Environment()for i in xrange(TOTAL_ENVIRONMENTS)]
 for virus in virList:
     virus.update_fitness(environmentList[0])
 
-virList = evolve(virList, environmentList[0])
+#virList = evolve(virList, environmentList[0])
 
-for virus in virList:
-    virus.update_fitness(environmentList[0])
+
+
+def evolution(widget, lienzo):
+    lienzo.virus =  evolve(lienzo.virus, environmentList[0])
+    for virus in lienzo.virus:
+        virus.update_fitness(environmentList[0])
 
 #Lienzo es donde se pintara todo
 class Lienzo(gtk.DrawingArea):
@@ -91,7 +95,7 @@ class Lienzo(gtk.DrawingArea):
 
     def update(self):
         self.queue_draw()
-        for virus in virList:
+        for virus in self.virus:
             if not virus.isDead:
                 virus.update()
             
@@ -107,8 +111,8 @@ class Lienzo(gtk.DrawingArea):
 
         #pintar a los agentes
         #display_lines(cr, self.annealedCells)
-        display_simulation(cr,virList)
-        self.hud.display_viruses(cr, virList)
+        display_simulation(cr,self.virus)
+        self.hud.display_viruses(cr, self.virus)
         self.hud.display_environment(cr,environmentList)
 
         #pintar efecto de selección sobre un agente
@@ -125,7 +129,7 @@ class Lienzo(gtk.DrawingArea):
     def button_press(self,widget,event):
         if event.button == 1:
             self.objetoSeleccionado=[]
-            lstTemp = virList
+            lstTemp = self.virus
             for ob in lstTemp:
                 if ob.drag(event.x,event.y):
                     self.draggingObject = ob
@@ -172,8 +176,8 @@ class Main(gtk.Window):
         filem = gtk.MenuItem("File")
         filem.set_submenu(filemenu)
 
-        annealMenu = gtk.MenuItem("Annealing")
-#        annealMenu.connect("activate", update_annealing, self.lienzo)
+        annealMenu = gtk.MenuItem("Genetic")
+        annealMenu.connect("activate", evolution, self.lienzo)
         filemenu.append(annealMenu)
 
         exit = gtk.MenuItem("Exit")
