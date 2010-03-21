@@ -42,7 +42,7 @@ class Virus(Sprite):
 
 
     def __str__(self):
-        return "Virus [%d|%d|%d|%d] ->fit:%d" % (self.tempLevel, self.phLevel, self.aggresiveness, self.visibility, self.fitness)
+        return "Virus [%d|%d|%d|%d] ->fit:%d @ (%f,%f)" % (self.tempLevel, self.phLevel, self.aggresiveness, self.visibility, self.fitness, self.posX,self.posY)
 
     def get_type(self):
         return "Virus"
