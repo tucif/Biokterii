@@ -1,5 +1,6 @@
 import random
 
+
 from constants import WINDOW_SIZE
 
 class Environment:
@@ -14,4 +15,6 @@ class Environment:
         self.ph=random.randint(0,14)       #0~14
         self.reactivity=random.randint(0,100) #0~100
         self.radar=random.randint(0,100)    #0~100
+
+
 

@@ -27,6 +27,17 @@ class Hud():
             posXText=environment.posX+5
             posYText=environment.posY+20
             text="Environment properties: temp:%d | ph:%d | reactivity: %d | radars: %d" % (environment.temp,environment.ph,environment.reactivity,environment.radar)
+
+            window.rectangle(0,0,700,700)
+
+            #dependiendo el numero de radares es la visibilidad del mapa
+            visibility = 1.0 - (environment.radar/200.0 + 0.4)
+
+            window.set_source_rgba(1,1,1,visibility)
+            window.fill()
+
             window.move_to(posXText,posYText)
             window.set_source_rgba(1,1,1,0.7)
             window.show_text(text)
+
+            
