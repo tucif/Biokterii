@@ -71,7 +71,7 @@ class Lienzo(gtk.DrawingArea):
         #celulas
         self.virus=virList
 
-        self.virus_meta = Virus((WINDOW_SIZE/2)-VIRUS_WIDTH/2,35,
+        self.virus_meta = Virus((WINDOW_SIZE-VIRUS_WIDTH-130),40,
                                 environmentList[0].temp,
                                 environmentList[0].ph,
                                 environmentList[0].reactivity,
@@ -114,6 +114,7 @@ class Lienzo(gtk.DrawingArea):
         cr.set_source_rgb(0,0,0)
         cr.paint()
 
+
         #pintar a los agentes
         display_simulation(cr,self.virus,environmentList[0])
         self.virus_meta.paint(cr)
@@ -133,6 +134,17 @@ class Lienzo(gtk.DrawingArea):
         cr.move_to(5,30)
         cr.set_source_rgba(1,1,1,0.7)
         cr.show_text(text)
+
+        #pintar recuadro que envuelve a meta_virus (el meta virus se pinta solo en su paint)
+        text="VIRUS IDEAL"
+        cr.move_to(515,20)
+        cr.set_source_rgba(1,1,1,1)
+        cr.show_text(text)
+
+        cr.set_line_width(5)
+        cr.rectangle(500-5,5,100,100)
+        cr.set_source_rgba(1,1,1,1)
+        cr.stroke()
 
     def average_virus_fitness(self,virList):
         accum=0
