@@ -23,7 +23,8 @@ def evolve(virList, environment):
         vir.transAggresiveness = oldVir.aggresiveness
         vir.transVisibility = oldVir.visibility
         print vir
-
+    if len(virList)>0:
+        return newVirList+virList
     return newVirList
 
 def reproduction(virList):
