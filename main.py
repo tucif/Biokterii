@@ -82,7 +82,7 @@ class Lienzo(gtk.DrawingArea):
         self.corriendo = True
 
         self.objetoSeleccionado=[]
-        gobject.timeout_add(20, self.mainloop) ########################################################
+        #gobject.timeout_add(20, self.mainloop) ########################################################
 
     def actualizar_dragged(self,widget,event):
         if self.draggingObject:
@@ -95,10 +95,10 @@ class Lienzo(gtk.DrawingArea):
 
     def init_simulation(self):
         """Inicializacion de valores"""
-        #gobject.timeout_add(20, self.on_timer)
+        gobject.timeout_add(20, self.on_timer)
 
     def update(self):
-        #self.queue_draw()
+        self.queue_draw()
         self.virus_meta.update()
         for virus in self.virus:
             if not virus.isDead:
@@ -175,22 +175,20 @@ class Lienzo(gtk.DrawingArea):
     def correr(self):
         self.corriendo=True
         
-    def mainloop(self):
-        while self.corriendo:
-            # Process all pending events.
-            self.update()
-            while gtk.events_pending():
-                gtk.main_iteration(False)
-            # Generate an expose event (could just draw here as well).
-            self.queue_draw()
+#    def mainloop(self):
+#        while self.corriendo:
+#            # Process all pending events.
+#            self.update()
+#            while gtk.events_pending():
+#                gtk.main_iteration(False)
+#                # Generate an expose event (could just draw here as well).
+#            self.queue_draw()
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Main(gtk.Window):
     def __init__(self):
         super(Main, self).__init__()
-        
-        self.faseActual = 4
         self.set_title('Biokterii')
         self.set_size_request(WINDOW_SIZE,WINDOW_SIZE)
         self.set_resizable(True)
@@ -214,7 +212,7 @@ class Main(gtk.Window):
         filem = gtk.MenuItem("File")
         filem.set_submenu(filemenu)
 
-        annealMenu = gtk.MenuItem("Genetic")
+        annealMenu = gtk.MenuItem("Evolve")
         annealMenu.connect("activate", evolution, self.lienzo)
         filemenu.append(annealMenu)
 
@@ -242,7 +240,9 @@ class Main(gtk.Window):
     def correr_lienzo(self, widget):
         self.lienzo.correr()
 
-
+#    def cerrar_lienzo(self,widget):
+#        self.lienzo.corriendo=False
+#        gtk.main_quit
 
 if __name__ == '__main__':
     Main()
