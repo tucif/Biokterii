@@ -111,7 +111,7 @@ class Lienzo(gtk.DrawingArea):
         #todo en la ventana
         cr = widget.window.cairo_create()
         #Le decimos a cairo que pinte su widget por primera vez.
-        cr.set_source_rgb(0.5,0,0)
+        cr.set_source_rgb(0,0,0)
         cr.paint()
 
 
