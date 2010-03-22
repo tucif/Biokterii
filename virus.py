@@ -71,6 +71,8 @@ class Virus(Sprite):
         pixbuf = self.imagen
         pixbuf=pixbuf.scale_simple(self.width,self.height,gtk.gdk.INTERP_BILINEAR)
 
+        #temperature representation
+
         #ph representation
 
         window.save()
@@ -89,18 +91,13 @@ class Virus(Sprite):
         window.set_source_pixbuf(pixbuf,self.posX,self.posY)
         window.paint()
 
-        #temperature representation
-        window.push_group()
-        window.set_source_pixbuf(pixbuf, self.posX,self.posY)
-        window.paint()
-        src = window.pop_group()
-        window.set_source_rgba(1,0,0, 0.25)
-        window.mask(src)
-
         window.restore()
         self.rot+=self.deltaRot
 
         #visibility representation
+        
+
+        #ends strange stuff
 
 
         #draw fitness line
