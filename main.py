@@ -115,7 +115,7 @@ class Lienzo(gtk.DrawingArea):
         cr.paint()
 
         #pintar a los agentes
-        display_simulation(cr,self.virus)
+        display_simulation(cr,self.virus,environmentList[0])
         self.virus_meta.paint(cr)
         self.hud.display_viruses(cr, self.virus+[self.virus_meta])
         self.hud.display_environment(cr,environmentList)
