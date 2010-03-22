@@ -11,7 +11,7 @@ class Environment:
         self.height=height
         
         #properties
-        self.temp= random.randint(127,127)    #0~100
+        self.temp= random.randint(0,127)    #0~100
         self.ph=random.randint(0,15)       #0~14
         self.reactivity=random.randint(0,127) #0~100
         self.radar=random.randint(0,127)    #0~100
