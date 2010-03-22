@@ -111,6 +111,8 @@ class Virus(Sprite):
         window.rectangle(self.posX+1,self.posY+self.height+1,float(self.fitnessPercentage*(self.width-1)/100), 4)
         window.fill()
 
+        #window.draw(handle, dst, src)
+
         #draw fitness line container
         window.set_line_width(1)
         window.set_source_rgba(1,1,1,1)
