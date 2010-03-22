@@ -22,6 +22,7 @@ def evolve(virList, environment):
         vir.transPhLevel = oldVir.phLevel
         vir.transAggresiveness = oldVir.aggresiveness
         vir.transVisibility = oldVir.visibility
+        vir.transFitnessPercentage=oldVir.fitnessPercentage
         print vir
     if len(virList)>0:
         return newVirList+virList
@@ -32,7 +33,7 @@ def reproduction(virList):
     populationFitness=0
     averageFitness=0
 
-    #calculate population fitness and average_fitness
+    #calculate population fitness and average_virus_fitness_fitness
     for virus in virList:
         populationFitness+=virus.fitness;
     averageFitness=float(populationFitness)/len(virList)

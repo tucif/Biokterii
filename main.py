@@ -44,7 +44,7 @@ class Lienzo(gtk.DrawingArea):
     def __init__(self, ventana):
         """"""
         super(Lienzo, self).__init__()
-
+        
         #Cambiar el color de fondo de la ventana
         self.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color(0,0,0))
         # Pedir el tamano de la ventana
@@ -71,7 +71,7 @@ class Lienzo(gtk.DrawingArea):
         #celulas
         self.virus=virList
 
-        self.virus_meta = Virus(20,35,
+        self.virus_meta = Virus((WINDOW_SIZE/2)-VIRUS_WIDTH/2,35,
                                 environmentList[0].temp,
                                 environmentList[0].ph,
                                 environmentList[0].reactivity,
@@ -82,7 +82,7 @@ class Lienzo(gtk.DrawingArea):
         self.corriendo = True
 
         self.objetoSeleccionado=[]
-
+        gobject.timeout_add(20, self.mainloop) ########################################################
 
     def actualizar_dragged(self,widget,event):
         if self.draggingObject:
@@ -95,10 +95,10 @@ class Lienzo(gtk.DrawingArea):
 
     def init_simulation(self):
         """Inicializacion de valores"""
-        gobject.timeout_add(20, self.on_timer)
+        #gobject.timeout_add(20, self.on_timer)
 
     def update(self):
-        self.queue_draw()
+        #self.queue_draw()
         self.virus_meta.update()
         for virus in self.virus:
             if not virus.isDead:
@@ -129,6 +129,17 @@ class Lienzo(gtk.DrawingArea):
 
             cr.stroke()
 
+        text="Average fitness: %d" % (self.average_virus_fitness(self.virus))
+        cr.move_to(5,30)
+        cr.set_source_rgba(1,1,1,0.7)
+        cr.show_text(text)
+
+    def average_virus_fitness(self,virList):
+        accum=0
+        for virus in virList:
+            accum+=virus.fitness
+
+        return float(accum)/len(virList)
         
     #Para drag & drop
     def button_press(self,widget,event):
@@ -151,12 +162,22 @@ class Lienzo(gtk.DrawingArea):
 
     def correr(self):
         self.corriendo=True
+        
+    def mainloop(self):
+        while self.corriendo:
+            # Process all pending events.
+            self.update()
+            while gtk.events_pending():
+                gtk.main_iteration(False)
+            # Generate an expose event (could just draw here as well).
+            self.queue_draw()
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Main(gtk.Window):
     def __init__(self):
         super(Main, self).__init__()
+        
         self.faseActual = 4
         self.set_title('Biokterii')
         self.set_size_request(WINDOW_SIZE,WINDOW_SIZE)
@@ -208,6 +229,8 @@ class Main(gtk.Window):
 
     def correr_lienzo(self, widget):
         self.lienzo.correr()
+
+
 
 if __name__ == '__main__':
     Main()

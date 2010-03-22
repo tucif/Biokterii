@@ -27,7 +27,7 @@ class Virus(Sprite):
         self.velY=0.0
 
         #properties transitional values
-        self.deltaTrans=0.5
+        self.deltaTrans=1.0
         self.transTempLevel= tempLevel    #0~127
         self.transPhLevel= phLevel       #0~15
         self.transAggresiveness=aggresiveness #0~127
@@ -40,6 +40,8 @@ class Virus(Sprite):
         self.visibility=visibility    #0~127
 
         self.fitness=0
+
+        self.transFitnessPercentage=0
         self.fitnessPercentage=0
 
         self.imagen=VIRUS_IMAGE
@@ -104,6 +106,13 @@ class Virus(Sprite):
         elif self.transVisibility != self.visibility:
             self.transVisibility=self.visibility
 
+        if self.transFitnessPercentage<self.fitnessPercentage-1:
+            self.transFitnessPercentage+=self.deltaTrans/2
+        elif self.transFitnessPercentage>self.fitnessPercentage+1:
+            self.transFitnessPercentage-=self.deltaTrans/2
+        elif self.transFitnessPercentage != self.fitnessPercentage:
+            self.transFitnessPercentage=self.fitnessPercentage
+
         self.posX+=self.velX
         self.posY+=self.velY
         if self.hp<=0:
@@ -164,14 +173,14 @@ class Virus(Sprite):
 
 
         #draw fitness line
-        if self.fitnessPercentage<=25:
+        if self.transFitnessPercentage<=25:
             red=1
             green=0
         else:
-            green=((self.fitnessPercentage-25)*1.3333)/100
+            green=((self.transFitnessPercentage-25)*1.3333)/100
             red = 1-green
         window.set_source_rgba(red,green,0,1)
-        window.rectangle(self.posX+1,self.posY+self.height+1,float(self.fitnessPercentage*(self.width-1)/100), 4)
+        window.rectangle(self.posX+1,self.posY+self.height+1,float(self.transFitnessPercentage*(self.width-1)/100), 4)
         window.fill()
 
         #draw fitness line container
