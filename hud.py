@@ -28,6 +28,7 @@ class Hud():
             posYText=environment.posY+20
             text="Environment properties: temp:%d | ph:%d | reactivity: %d | radars: %d" % (environment.temp,environment.ph,environment.reactivity,environment.radar)
 
+
             window.rectangle(0,0,700,700)
 
             #dependiendo el numero de radares es la visibilidad del mapa a mas radares mas clara la imagen

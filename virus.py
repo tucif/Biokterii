@@ -25,6 +25,15 @@ class Virus(Sprite):
         self.isDead=False
         self.velX=0.0
         self.velY=0.0
+
+        #properties transitional values
+        self.deltaTrans=0.5
+        self.transTempLevel= tempLevel    #0~127
+        self.transPhLevel= phLevel       #0~15
+        self.transAggresiveness=aggresiveness #0~127
+        self.transVisibility=visibility    #0~127
+
+        #properties value
         self.tempLevel= tempLevel    #0~127
         self.phLevel= phLevel       #0~15
         self.aggresiveness=aggresiveness #0~127
@@ -35,19 +44,23 @@ class Virus(Sprite):
 
         self.imagen=VIRUS_IMAGE
 
-        #rotation
-        self.deltaRot=(float(self.aggresiveness)*100/127)*0.1/100
+        #rotation aggression
+        self.deltaRotAggr=0
         self.rot=0
 
+        #rotation radars
+        self.deltaRotVis=0
+        self.rotVis=0
+
     def __str__(self):
-        return "Virus [%d|%d|%d|%d] ->fit:%d @ (%f,%f)" % (self.tempLevel, self.phLevel, self.aggresiveness, self.visibility, self.fitness, self.posX,self.posY)
+        return "[%d|%d|%d|%d]" % (self.transTempLevel, self.transPhLevel, self.transAggresiveness, self.transVisibility)
 
     def get_type(self):
         return "Virus"
 
     def update_fitness(self,environment):
         self.tempFitness=127-abs(environment.temp-self.tempLevel)
-        self.phFitness=127-(15-abs(environment.ph-self.phLevel))*8.46
+        self.phFitness=127-(abs(environment.ph-self.phLevel))*8.46
         self.reactFitness=127-abs(environment.reactivity-self.aggresiveness)
         self.radarFitness=127-abs(environment.radar-self.visibility)
 
@@ -57,7 +70,39 @@ class Virus(Sprite):
 
     def update(self):
         Sprite.update(self)
-        self.color=(float(self.tempLevel)/100,0,1-float(self.tempLevel)/100)
+        self.deltaRot=(float(self.transAggresiveness)*100/127)*0.1/100
+        self.rot+=self.deltaRot
+
+        self.deltaRotVis=(float(self.transVisibility)*100/127)*0.1/100
+        self.rotVis+=self.deltaRotVis
+
+        if self.transTempLevel<self.tempLevel-1:
+            self.transTempLevel+=self.deltaTrans
+        elif self.transTempLevel>self.tempLevel+1:
+            self.transTempLevel-=self.deltaTrans
+        elif self.transTempLevel != self.tempLevel:
+            self.transTempLevel=self.tempLevel
+
+        if self.transPhLevel<self.phLevel-1:
+            self.transPhLevel+=self.deltaTrans/10
+        elif self.transPhLevel>self.phLevel+1:
+            self.transPhLevel-=self.deltaTrans/10
+        elif self.transPhLevel != self.phLevel:
+            self.transPhLevel=self.phLevel
+
+        if self.transAggresiveness<self.aggresiveness-1:
+            self.transAggresiveness+=self.deltaTrans
+        elif self.transAggresiveness>self.aggresiveness+1:
+            self.transAggresiveness-=self.deltaTrans
+        elif self.transAggresiveness != self.aggresiveness:
+            self.transAggresiveness=self.aggresiveness
+
+        if self.transVisibility<self.visibility-1:
+            self.transVisibility+=self.deltaTrans
+        elif self.transVisibility>self.visibility+1:
+            self.transVisibility-=self.deltaTrans
+        elif self.transVisibility != self.visibility:
+            self.transVisibility=self.visibility
 
         self.posX+=self.velX
         self.posY+=self.velY
@@ -67,37 +112,55 @@ class Virus(Sprite):
             self.isDead=False;
 
     def paint(self,window):
-        #Sprite.paint(self,window)
         pixbuf = self.imagen
-        pixbuf=pixbuf.scale_simple(self.width,self.height,gtk.gdk.INTERP_BILINEAR)
+        pixbuf1=pixbuf.scale_simple(self.width/4,self.height/4,gtk.gdk.INTERP_BILINEAR)
 
-        #temperature representation
-
-        #ph representation
-
+        #visibility representation
         window.save()
         ThingMatrix = cairo.Matrix ( 1, 0, 0, 1, 0, 0 )
+        window.transform ( ThingMatrix )
+        cairo.Matrix.translate(ThingMatrix, self.posX+self.width/2,self.posY+self.height/2)
+        cairo.Matrix.rotate( ThingMatrix, -self.rotVis ) # Do the rotation
+        cairo.Matrix.translate(ThingMatrix, 40,40)
+        cairo.Matrix.translate(ThingMatrix, -(self.posX+self.width/2),-(self.posY+self.height/2))
+        window.transform ( ThingMatrix ) # and commit it to the context
+        window.set_source_pixbuf(pixbuf1,self.posX,self.posY)
+        window.paint()
+        window.restore()
 
+        window.save()
+        pixbuf=pixbuf.scale_simple(self.width,self.height,gtk.gdk.INTERP_BILINEAR)
+        ThingMatrix = cairo.Matrix ( 1, 0, 0, 1, 0, 0 )
         ## Next, move the drawing to it's x,y
-        window.transform ( ThingMatrix ) # Changes the context to reflect that
+        window.transform ( ThingMatrix )
 
         cairo.Matrix.translate(ThingMatrix, self.posX+self.width/2,self.posY+self.height/2)
         #aggresiveness representation
         cairo.Matrix.rotate( ThingMatrix, self.rot ) # Do the rotation
         cairo.Matrix.translate(ThingMatrix, -(self.posX+self.width/2),-(self.posY+self.height/2))
-
         window.transform ( ThingMatrix ) # and commit it to the context
 
         window.set_source_pixbuf(pixbuf,self.posX,self.posY)
         window.paint()
-
-        window.restore()
-        self.rot+=self.deltaRot
-
-        #visibility representation
         
+        #temperature representation
+        window.push_group()
+        window.set_source_pixbuf(pixbuf, self.posX,self.posY)
+        window.paint()
+        src = window.pop_group()
 
-        #ends strange stuff
+        red=(self.transTempLevel*100.0/127)/100
+        blue=1-red
+        window.set_source_rgba(red,0,blue,0.25)
+        window.mask(src)
+        window.restore()
+        
+        #ph representation
+        green=(self.transPhLevel*100.0/15)/100
+        blue=1-green
+        window.set_source_rgba(green,1,blue,1)
+        window.rectangle((self.posX+self.width/2+1)-5,(self.posY+self.height/2)-5,10,10)
+        window.fill()
 
 
         #draw fitness line
