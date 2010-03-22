@@ -40,14 +40,14 @@ class Virus(Sprite):
         self.rot=0
 
     def __str__(self):
-        return "Virus [%d|%d|%d|%d] ->fit %d" % (self.tempLevel, self.phLevel, self.aggresiveness, self.visibility, self.fitness)
+        return "Virus [%d|%d|%d|%d] ->fit:%d @ (%f,%f)" % (self.tempLevel, self.phLevel, self.aggresiveness, self.visibility, self.fitness, self.posX,self.posY)
 
     def get_type(self):
         return "Virus"
 
     def update_fitness(self,environment):
         self.tempFitness=127-abs(environment.temp-self.tempLevel)
-        self.phFitness=127-(abs(environment.ph-self.phLevel))*8.46
+        self.phFitness=127-(15-abs(environment.ph-self.phLevel))*8.46
         self.reactFitness=127-abs(environment.reactivity-self.aggresiveness)
         self.radarFitness=127-abs(environment.radar-self.visibility)
 
