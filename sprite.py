@@ -17,7 +17,13 @@ class Sprite():
         self.colHeight=DEFAULT_HEIGHT
         self.isVisible=True
         self.color=(random.random(),random.random(),random.random())
+
+
+        #alpha
         self.alpha=1.0
+        self.deltaAlpha=0.01;
+        self.transAlpha=1;
+
     def __str__(self):
         return "Sprite - Id: %d pos:[%d,%d]" % (self.id,self.posX,self.posY)
 
@@ -50,7 +56,12 @@ class Sprite():
         return False
 
     def update(self):
-        pass
+        if abs(self.transAlpha-self.alpha)<=self.deltaAlpha*2:
+            self.transAlpha=self.alpha
+        elif self.transAlpha < self.alpha:
+            self.transAlpha+=self.deltaAlpha
+        elif self.transAlpha > self.alpha:
+            self.transAlpha-=self.deltaAlpha
 
     def paint(self,window):
         """How a sprite is painted by default"""

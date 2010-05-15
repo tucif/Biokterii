@@ -22,9 +22,9 @@ from antibody import Antibody
 from display import display_simulation
 from hud import Hud
 
-TOTAL_CELLS = 2
+TOTAL_CELLS = 8
 TOTAL_VIRUS = 1
-TOTAL_HS = 1
+TOTAL_HS = 2
 TOTAL_ANTIBODIES = 0
 WINDOW_SIZE = 700
 
@@ -36,16 +36,12 @@ cellList=[Cell(
                 random.randint(0,WINDOW_SIZE-CELL_WIDTH),
                 random.randint(0,WINDOW_SIZE-CELL_HEIGHT)
                 ) for i in xrange(TOTAL_CELLS)]
-#stationList=[HealthStation(
-#                            WINDOW_SIZE/TOTAL_CELLS,
-#                            random.randint(0,WINDOW_SIZE-HS_WIDTH),
-#                            random.randint(0,WINDOW_SIZE-HS_HEIGHT)
-#                            ) for i in xrange(TOTAL_HS)]
 stationList=[HealthStation(
-                            500,
+                            WINDOW_SIZE/TOTAL_CELLS,
                             random.randint(0,WINDOW_SIZE-HS_WIDTH),
                             random.randint(0,WINDOW_SIZE-HS_HEIGHT)
                             ) for i in xrange(TOTAL_HS)]
+
 antibodyList=[Antibody() for i in xrange(TOTAL_ANTIBODIES)]
 
 annealedCells = cellList+stationList
@@ -116,9 +112,12 @@ class Lienzo(gtk.DrawingArea):
 
     def update(self):
         self.queue_draw()
+
         if self.annealingCompleted and not vir[0].isDead:
             self.set_virus_vel()
             vir[0].update()
+        for cell in self.annealedCells:
+            cell.update();
 
     
 
@@ -152,11 +151,13 @@ class Lienzo(gtk.DrawingArea):
         if vCenterX==cCenterX and vCenterY==cCenterY:
             print "next cell: "+str(self.nextCell)
             if self.nextCell in self.annealedCells:
+                self.nextCell.isDead="True"
                 if self.nextCell.get_type()=="Health Station":
                     self.nextCell.alpha=(0.5);
                 if self.nextCell.get_type()=="Cell" and not vir[0].isDead:
-                    self.nextCell.color=(1,0,0);
-                    
+                    self.nextCell.deltaRot=0;
+                    self.nextCell.alpha=0.2;
+
                 self.visitedCells=1+self.annealedCells.index(self.nextCell)
 
             if self.visitedCells==len(self.annealedCells):
@@ -170,10 +171,11 @@ class Lienzo(gtk.DrawingArea):
 
             if isinstance(lastCell,HealthStation):
                 vir[0].hp+=lastCell.healRatio
+                if vir[0].hp>vir[0].maxHp:
+                    vir[0].hp=vir[0].maxHp
 
             if vir[0].hp<0:
-                vir[0].color=(1,0,0)
-                vir[0].alpha=(0.5)
+                vir[0].isDead="True"
 
     def distance(self,a, b):
         return sqrt(pow(a.posX - b.posX,2) + pow(a.posY - b.posY,2))
@@ -202,8 +204,8 @@ class Lienzo(gtk.DrawingArea):
 
         #pintar a los agentes
         #display_lines(cr, self.annealedCells)
-        display_simulation(cr,vir,self.annealedCells,antibodyList)
-        self.hud.display(cr, vir+self.annealedCells+antibodyList)
+        display_simulation(cr,vir,self.annealedCells)
+        self.hud.display(cr, vir+self.annealedCells)
 
         
 

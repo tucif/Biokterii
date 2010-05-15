@@ -1,34 +1,60 @@
+import gtk
+
+from cell import Cell
 from sprite import Sprite
 from virus import Virus
 
+from constants import VIRUS_IMAGE
+from constants import STATION_ON, STATION_OFF
+
 DISPLAY_IDS=True
 
-def display_simulation(window,virusList,cellList,antibodyList):
+iterStationOn=STATION_ON.get_iter()
+
+def display_simulation(window,virusList,cellList):
     """Fucntion that diplays the whole simulation"""
     display_lines(window,cellList)
     display_cells(window,cellList)
-    display_antibodies(window,antibodyList)
     display_virus(window,virusList)
     
 def display_virus(window,virusList):
     """Fucntion that diplays the virus"""
     for virus in virusList:
-        virus.paint(window)
+        pixbuf = VIRUS_IMAGE
+        pixbuf1=pixbuf.scale_simple(virus.width,virus.height,gtk.gdk.INTERP_BILINEAR)
 
+        window.save()
+        window.set_source_pixbuf(pixbuf1,virus.posX,virus.posY)
+        window.paint()
+        window.restore()
+
+        #draw fitness line
+        green=((virus.transHp-25)*1.3333)/1000
+        red = 1-green
+            
+        window.set_source_rgba(red,green,0,1)
+        window.rectangle(virus.posX+1,virus.posY+virus.height+1,float(virus.transHp*(virus.width-1)/1000), 4)
+        window.fill()
+
+        
 def display_cells(window, cellList):
     """Fucntion that diplays the cells"""
     for cell in cellList:
-        cell.paint(window)
-
-def display_stations(window, stationList):
-    """Fucntion that diplays the recovery stations"""
-    for station in stationList:
-        station.paint(window)
-
-def display_antibodies(window, antibodyList):
-    """Fucntion that diplays the antibodies"""
-    for antibody in antibodyList:
-        antibody.paint(window)
+        if cell.get_type() == "Health Station":
+            if cell.isDead=="True":
+                pixbuf=STATION_OFF
+            else:
+                pixbuf = iterStationOn.get_pixbuf()
+                iterStationOn.advance()
+                
+            pixbuf=pixbuf.scale_simple(cell.width,cell.height,gtk.gdk.INTERP_BILINEAR)
+            window.save()
+            window.set_source_pixbuf(pixbuf,cell.posX,cell.posY)
+            window.paint()
+            window.restore()
+            
+        else:
+            cell.paint(window)
 
 def display_lines(window, cellList):
     for i in xrange(len(cellList)-1):

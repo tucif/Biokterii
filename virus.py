@@ -1,3 +1,4 @@
+import gtk
 import random
 
 from sprite import Sprite
@@ -12,7 +13,11 @@ class Virus(Sprite):
         self.height=DEFAULT_HEIGHT
         self.color=(0.3,0.6,0.5)
         self.maxHp=1000
+
         self.hp=self.maxHp
+        self.deltaHp=1
+        self.transHp=self.hp
+
         self.isDead=False
         self.velX=0.0;
         self.velY=0.0;
@@ -24,12 +29,20 @@ class Virus(Sprite):
         return "Virus"
 
     def update(self):
+        print "virus update"
         Sprite.update(self)
         self.posX+=self.velX
         self.posY+=self.velY
         if self.hp<=0:
             self.isDead=True
 
+        if self.transHp<self.hp-1:
+            self.transHp+=self.deltaHp
+        elif self.transHp>self.hp+1:
+            self.transHp-=self.deltaHp
+        elif self.transHp != self.hp:
+            self.transHp=self.hp
+
     def paint(self,window):
-        Sprite.paint(self,window)
+        pass
 
