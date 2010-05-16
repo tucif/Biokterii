@@ -90,8 +90,11 @@ class Annealer(Thread):
 			it will tend toward zero as the moves that can decrease the energy
 			are exhausted and moves that would increase the energy are no longer
 			thermally accessible."""
-			
+                        
+                        self.lienzo.bestEnergy=E
+
 			elapsed = time.time() - start
+                        
 			if step == 0:
 				print ' Temperature        Energy    Accept   Improve     Elapsed   Remaining'
 				print '%12.2f  %12.2f                      %s            ' % \
@@ -115,6 +118,7 @@ class Annealer(Thread):
 		prevEnergy = E
 		bestState = copy.deepcopy(state)
 		bestEnergy = E
+
 		trials, accepts, improves = 0, 0, 0
 		if updates > 0:
 			updateWavelength = float(steps) / updates
@@ -127,6 +131,8 @@ class Annealer(Thread):
                     T = Tmax * math.exp( Tfactor * step / steps )
                     self.move(state)
                     E = self.energy(state,self.virus)
+                    self.lienzo.currentEnergy=E
+                    self.lienzo.currentTemp=T
                     dE = E - prevEnergy
                     trials += 1
                     if dE > 0.0 and math.exp(-dE/T) < random.random():

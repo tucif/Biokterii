@@ -1,4 +1,5 @@
 from sprite import Sprite
+from virus import Virus
 
 ID_PADDING=[0,-5]
 
@@ -15,7 +16,10 @@ class Hud():
             if self.idVisible:
                 for object in objectList:
                     if isinstance(object,Sprite):
-                        text=str(object)+str(objectList.index(object))
+                        if isinstance(object, Virus):
+                            text=str(object)
+                        else:
+                            text=str(object)+str(objectList.index(object))
                         posXText=object.posX+object.width/2-(len(text)/2)*5
                         posYText=object.posY+ID_PADDING[1]
                         window.move_to(posXText,posYText)

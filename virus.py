@@ -23,22 +23,21 @@ class Virus(Sprite):
         self.velY=0.0;
 
     def __str__(self):
-        return "The Virus  hp:%d pos=[%d,%d]" % (self.hp,self.posX,self.posY)
+        return "The Virus  hp:%d" % (self.transHp)
 
     def get_type(self):
         return "Virus"
 
     def update(self):
-        print "virus update"
         Sprite.update(self)
         self.posX+=self.velX
         self.posY+=self.velY
-        if self.hp<=0:
+        if self.transHp<=0:
             self.isDead=True
 
-        if self.transHp<self.hp-1:
+        if self.transHp<self.hp-self.deltaHp:
             self.transHp+=self.deltaHp
-        elif self.transHp>self.hp+1:
+        elif self.transHp>self.hp+self.deltaHp:
             self.transHp-=self.deltaHp
         elif self.transHp != self.hp:
             self.transHp=self.hp

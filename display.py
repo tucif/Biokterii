@@ -33,8 +33,14 @@ def display_virus(window,virusList):
         red = 1-green
             
         window.set_source_rgba(red,green,0,1)
-        window.rectangle(virus.posX+1,virus.posY+virus.height+1,float(virus.transHp*(virus.width-1)/1000), 4)
+        window.rectangle(virus.posX-5,virus.posY+virus.height+1,float(virus.transHp*(virus.width-1+10)/1000), 2)
         window.fill()
+
+        #draw fitness line container
+        window.set_line_width(1)
+        window.set_source_rgba(1,1,1,1)
+        window.rectangle(virus.posX-5,virus.posY+virus.height,virus.width+10, 3)
+        window.stroke()
 
         
 def display_cells(window, cellList):
@@ -66,7 +72,9 @@ def draw_line_between(window,sprite1,sprite2):
     if (isinstance(sprite1,Sprite) and (isinstance(sprite2,Sprite))):
         [sp1CenterX,sp1CenterY]=sprite1.get_center()
         [sp2CenterX,sp2CenterY]=sprite2.get_center()
-        window.set_source_rgb(1.0, 1.0, 0.0)
         window.move_to(sp1CenterX,sp1CenterY)
         window.line_to(sp2CenterX,sp2CenterY)
+
+        window.set_source_rgba(1.0, 1.0, 0.0,(sprite2.transAlpha))
+
         window.stroke()

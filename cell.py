@@ -74,7 +74,7 @@ class Cell(Sprite):
             return self.innerColor
 
     def __str__(self):
-        return self.name
+        return self.name + " | Order: "
 
     def get_type(self):
         return "Cell"

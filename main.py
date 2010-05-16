@@ -93,8 +93,11 @@ class Lienzo(gtk.DrawingArea):
         self.draggingObject = None
         self.corriendo = True
 
-        self.objetoSeleccionado=[]
+        self.bestEnergy=0
+        self.currentEnergy=0
+        self.currentTemp=0
 
+        self.objetoSeleccionado=[]
 
     def actualizar_dragged(self,widget,event):
         if self.draggingObject:
@@ -148,12 +151,11 @@ class Lienzo(gtk.DrawingArea):
         else:
             vir[0].velY=0
 
-        if vCenterX==cCenterX and vCenterY==cCenterY:
-            print "next cell: "+str(self.nextCell)
+        if (vCenterX>cCenterX-1 and vCenterX<cCenterX+1) and (vCenterY>cCenterY-1 and vCenterY<cCenterY+1):
             if self.nextCell in self.annealedCells:
                 self.nextCell.isDead="True"
                 if self.nextCell.get_type()=="Health Station":
-                    self.nextCell.alpha=(0.5);
+                    self.nextCell.alpha=(0.2);
                 if self.nextCell.get_type()=="Cell" and not vir[0].isDead:
                     self.nextCell.deltaRot=0;
                     self.nextCell.alpha=0.2;
@@ -167,15 +169,15 @@ class Lienzo(gtk.DrawingArea):
 
             if not self.allVisited:
                 self.nextCell=self.annealedCells[self.visitedCells]
-                vir[0].hp-=self.distance(lastCell, self.nextCell)
+            vir[0].hp-=self.distance(lastCell, self.nextCell)
 
             if isinstance(lastCell,HealthStation):
                 vir[0].hp+=lastCell.healRatio
                 if vir[0].hp>vir[0].maxHp:
                     vir[0].hp=vir[0].maxHp
 
-            if vir[0].hp<0:
-                vir[0].isDead="True"
+            if vir[0].transHp<=0:
+                vir[0].isDead=True
 
     def distance(self,a, b):
         return sqrt(pow(a.posX - b.posX,2) + pow(a.posY - b.posY,2))
@@ -206,6 +208,18 @@ class Lienzo(gtk.DrawingArea):
         #display_lines(cr, self.annealedCells)
         display_simulation(cr,vir,self.annealedCells)
         self.hud.display(cr, vir+self.annealedCells)
+
+        cr.move_to(5,15)
+        text="Temperature    = %f" % self.currentTemp
+        cr.show_text(text)
+
+        cr.move_to(5,30)
+        text="Best Energy      = %f" % self.bestEnergy
+        cr.show_text(text)
+        
+        cr.move_to(5,45)
+        text="Current Energy = %f" % self.currentEnergy
+        cr.show_text(text)
 
         
 
