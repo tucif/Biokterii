@@ -9,7 +9,7 @@ TRAIN_CELLS=15
 
 
 #imagenes
-VIRUS_IMAGE=gtk.gdk.pixbuf_new_from_file("resources/virus/virus.png")
-STATION_OFF=gtk.gdk.pixbuf_new_from_file("resources/healthStation/healthStationOff.png")
-STATION_ON=gtk.gdk.PixbufAnimation("resources/healthStation/healthStationOn.gif")
+VIRUS_IMAGE=gtk.gdk.pixbuf_new_from_file("./resources/virus/virus.png")
+STATION_OFF=gtk.gdk.pixbuf_new_from_file("./resources/healthStation/healthStationOff.png")
+STATION_ON=gtk.gdk.PixbufAnimation("./resources/healthStation/healthStationOn.gif")
      

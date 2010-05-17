@@ -77,7 +77,7 @@ class Lienzo(gtk.DrawingArea):
         self.set_events(gtk.gdk.BUTTON_PRESS_MASK|gtk.gdk.BUTTON_RELEASE_MASK|gtk.gdk.POINTER_MOTION_MASK)
 
         #Inicializar todos los valores
-        self.init_simulation()
+        self.init_simulation(None)
         self.hud=Hud()
         
         #celulas
@@ -108,9 +108,8 @@ class Lienzo(gtk.DrawingArea):
         self.update()
         return True
 
-    def init_simulation(self):
+    def init_simulation(self,widget):
         """Inicializacion de valores"""
-        
         gobject.timeout_add(20, self.on_timer)
 
     def update(self):
@@ -118,7 +117,7 @@ class Lienzo(gtk.DrawingArea):
 
         if self.annealingCompleted and not vir[0].isDead:
             self.set_virus_vel()
-            vir[0].update()
+            vir[0].update()        
         for cell in self.annealedCells:
             cell.update();
 
@@ -258,6 +257,29 @@ class Lienzo(gtk.DrawingArea):
     def correr(self):
         self.corriendo=True
 
+    def regenerar(self):
+        for cell in self.annealedCells:
+            cell.isDead=False
+            if isinstance(cell,Cell):
+                cell.hp=cell.maxHp
+                cell.deltaRot = 0.05*random.choice([1,-1])
+            cell.status=None
+            cell.isAvailable=True
+            cell.alpha=1
+
+        vir[0].hp=1000
+        vir[0].transHp=1000
+        vir[0].isDead=False
+        self.annealingCompleted=False
+        self.initialized=False
+        self.allVisited=False
+        self.visitedCells=0
+        self.nextCell=None
+
+        self.bestEnergy=0
+        self.currentEnergy=0
+        self.currentTemp=0
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Main(gtk.Window):
@@ -293,6 +315,10 @@ class Main(gtk.Window):
         annealMenu.connect("activate", update_annealing, self.lienzo)
         filemenu.append(annealMenu)
 
+        restartMenu = gtk.MenuItem("Restart")
+        restartMenu.connect("activate", self.regenerar_lienzo)
+        filemenu.append(restartMenu)
+
         exit = gtk.MenuItem("Exit")
         exit.connect("activate", gtk.main_quit)
         filemenu.append(exit)
@@ -317,9 +343,9 @@ class Main(gtk.Window):
 
     def correr_lienzo(self, widget):
         self.lienzo.correr()
-
             
-
+    def regenerar_lienzo(self,widget):
+        self.lienzo.regenerar()
 
 if __name__ == '__main__':
     Main()
